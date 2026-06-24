@@ -11,6 +11,7 @@
 <script src="runner2-lottie.js" onerror="window.__noRunner2=1"></script>
 <script>window.__SP = window.RUNNER_LOTTIE_2 || (window.RUNNER_LOTTIE && window.RUNNER_LOTTIE!==window.__BIG ? window.RUNNER_LOTTIE : null);</script>
 <script src="track-lottie.js" onerror="window.__noTrack=1"></script>
+<script src="config.js" onerror="window.__noConfig=1"></script>
 <script>window.__TRACK = window.TRACK_LOTTIE || (window.RUNNER_LOTTIE && window.RUNNER_LOTTIE!==window.__BIG && window.RUNNER_LOTTIE!==window.__SP ? window.RUNNER_LOTTIE : null);</script>
 <style>
   :root{
@@ -42,7 +43,7 @@
   .card h2{font-size:16px;margin-bottom:14px;color:var(--orange);display:flex;align-items:center;gap:8px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
 
   label{font-size:13px;color:var(--muted);display:block;margin:12px 0 6px}
-  textarea,input[type=number],select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+  textarea,input[type=number],input[type=text],select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
     border-radius:12px;color:var(--text);padding:12px;font-size:14px;font-family:inherit;
     backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
   textarea:focus,input:focus,select:focus{outline:none;border-color:rgba(255,157,60,.6);background:rgba(255,255,255,.10)}
@@ -162,8 +163,8 @@
       <div class="ttl">⚙️ ตั้งค่าคอลัมน์จากไฟล์</div>
       <div class="chk"><input type="checkbox" id="hasHeader" checked> แถวแรกเป็นหัวตาราง</div>
       <label>คอลัมน์ชื่อ</label><select id="colName"></select>
-      <label>คอลัมน์เบอร์โทร</label><select id="colPhone"><option value="-1">— ไม่ใช้ —</option></select>
-      <label>คอลัมน์อีเมล</label><select id="colEmail"><option value="-1">— ไม่ใช้ —</option></select>
+      <label>คอลัมน์นามสกุล</label><select id="colPhone"><option value="-1">— ไม่ใช้ —</option></select>
+      <label>คอลัมน์ BIB</label><select id="colEmail"><option value="-1">— ไม่ใช้ —</option></select>
       <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCount"></div>
     </div>
 
@@ -177,12 +178,15 @@
       <div><label>ระยะเวลาสุ่ม (วินาที)</label><input type="number" id="dur" value="5" min="1" max="60"></div>
     </div>
 
+    <label>🌐 Google Sheet Log URL (วางลิงก์ Apps Script — เว้นว่างได้ถ้าไม่ใช้ log)</label>
+    <input type="text" id="logUrl" placeholder="https://script.google.com/macros/s/.../exec">
+
     <div class="err" id="err"></div>
 
     <div style="margin-top:16px" class="row">
       <button class="btn-primary" id="toShow">▶ เข้าสู่หน้าจอสุ่ม</button>
       <button class="btn-soft" id="embed" disabled>💾 ฝังข้อมูลถาวร (สร้าง data.js)</button>
-      <button class="btn-soft" id="embedWeb" disabled>🌐 data.js ขึ้นเว็บ (ชื่อล้วน-ปลอดภัย)</button>
+      <button class="btn-soft" id="embedWeb" disabled>🌐 data.js สำหรับขึ้นเว็บ</button>
       <button class="btn-soft" id="mkRunner">🛠️ นักวิ่งรางวัลใหญ่ → .js</button>
       <button class="btn-soft" id="mkRunner2">🛠️ นักวิ่งรางวัลพิเศษ → .js</button>
       <input type="file" id="lottieFile" accept=".json" style="display:none">
@@ -193,12 +197,31 @@
       • กันสุ่มซ้ำข้ามทั้ง 2 รางวัล (คนที่ถูกแล้วจะไม่ถูกสุ่มอีก) • ข้อมูลถูกจำไว้แม้รีเฟรชหน้า<br>
       • <b>ฝังข้อมูลถาวร:</b> อัปโหลดครั้งเดียว → กดปุ่ม 💾 → นำ <b>data.js</b> วางในโฟลเดอร์เดียวกับระบบ → เปิดครั้งต่อไปข้อมูลโหลดเองอัตโนมัติ ไม่ต้องอัปโหลดอีก
     </div>
+
+    <div style="margin-top:18px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+        <div style="color:var(--orange);font-weight:700;font-size:15px">📋 Log การสุ่ม (เก็บในเครื่องนี้)</div>
+        <div class="row">
+          <button class="btn-soft" id="logExport">⬇️ Excel</button>
+          <button class="btn-ghost" id="logClear">ล้าง log</button>
+        </div>
+      </div>
+      <div class="winners" style="max-height:260px;margin-top:8px">
+        <table>
+          <thead><tr><th>เวลา</th><th>ผู้กดสุ่ม</th><th>รางวัล</th><th class="no">จำนวน</th></tr></thead>
+          <tbody id="logBody"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:18px">ยังไม่มี log การสุ่ม</td></tr></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- ===================== หน้าจอสุ่ม (FRONTEND) ===================== -->
   <div id="show" class="hidden">
     <div class="topbar">
-      <span class="pill" id="poolPill">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
+      <div class="row" style="gap:10px">
+        <input type="text" id="operator" placeholder="👤 ชื่อผู้กดสุ่ม" style="max-width:200px">
+        <span class="pill" id="poolPill">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
+      </div>
       <div class="row">
         <button class="btn-ghost" id="resetAll">รีเซ็ตผลทั้งหมด</button>
         <button class="btn-ghost" id="toAdmin">⚙️ หลังบ้าน</button>
@@ -235,7 +258,7 @@
             <span class="exp"><button class="btn-green" id="xlBig" disabled>Excel</button><button class="btn-soft" id="csvBig" disabled>CSV</button></span>
           </div>
           <div class="winners"><table>
-            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>เบอร์โทร</th><th>อีเมล</th></tr></thead>
+            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>นามสกุล</th><th>BIB</th></tr></thead>
             <tbody id="wbBig"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">ยังไม่มีผู้โชคดี</td></tr></tbody>
           </table></div>
         </div>
@@ -246,7 +269,7 @@
             <span class="exp"><button class="btn-green" id="xlSp" disabled>Excel</button><button class="btn-soft" id="csvSp" disabled>CSV</button></span>
           </div>
           <div class="winners"><table>
-            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>เบอร์โทร</th><th>อีเมล</th></tr></thead>
+            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>นามสกุล</th><th>BIB</th></tr></thead>
             <tbody id="wbSp"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">ยังไม่มีผู้โชคดี</td></tr></tbody>
           </table></div>
         </div>
@@ -264,18 +287,56 @@ let spinning=false;
 const EVENT='TrailRunning2026', LSKEY='giDrawData';
 
 const keyOf=r=>(r.name||'')+'|'+(r.phone||'')+'|'+(r.email||'');
-const disp =r=>r.name||r.phone||r.email||'';
+const disp =r=>[r.name,r.phone].filter(Boolean).join(' ')||r.email||''; // ชื่อ + นามสกุล
 
 /* ---------- persistence ---------- */
 function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({
   records,winnersBig,winnersSpecial,
-  n100:$('n100').value,n15:$('n15').value,dur:$('dur').value
+  n100:$('n100').value,n15:$('n15').value,dur:$('dur').value,
+  logUrl:$('logUrl').value, operator:$('operator').value
 })); }catch(e){} }
 function load(){ try{
   const d=JSON.parse(localStorage.getItem(LSKEY)||'null'); if(!d) return;
   records=d.records||[]; winnersBig=d.winnersBig||[]; winnersSpecial=d.winnersSpecial||[];
   if(d.n100)$('n100').value=d.n100; if(d.n15)$('n15').value=d.n15; if(d.dur)$('dur').value=d.dur;
+  if(d.logUrl)$('logUrl').value=d.logUrl; if(d.operator)$('operator').value=d.operator;
 }catch(e){} }
+
+/* ---------- ส่ง log การสุ่มไป Google Sheet ---------- */
+function sendLog(entry){
+  const url=($('logUrl').value||'').trim();
+  if(!url) return; // ไม่ได้ตั้ง log ก็ข้าม
+  try{
+    fetch(url,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(entry)});
+  }catch(e){}
+}
+
+/* ---------- log ในเครื่อง (ดูในระบบได้เลย) ---------- */
+const LOGKEY='giDrawLog';
+let drawLog=[];
+function loadLog(){ try{ drawLog=JSON.parse(localStorage.getItem(LOGKEY)||'[]'); }catch(e){ drawLog=[]; } }
+function saveLog(){ try{ localStorage.setItem(LOGKEY,JSON.stringify(drawLog)); }catch(e){} }
+function addLog(entry){ drawLog.push(entry); saveLog(); renderLog(); }
+function renderLog(){
+  const b=$('logBody'); if(!b) return;
+  if(!drawLog.length){ b.innerHTML='<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:18px">ยังไม่มี log การสุ่ม</td></tr>'; return; }
+  b.innerHTML=drawLog.slice().reverse().map(e=>
+    `<tr><td>${esc(e.time)}</td><td>${esc(e.operator)}</td><td>${esc(e.prize)}</td><td class="no">${e.count}</td></tr>`).join('');
+}
+$('logExport').onclick=()=>{
+  if(!drawLog.length){ alert('ยังไม่มี log'); return; }
+  const rows=[['เวลา','ผู้กดสุ่ม','รางวัล','จำนวน','รายชื่อผู้โชคดี'],
+    ...drawLog.map(e=>[e.time,e.operator,e.prize,e.count,e.winners])];
+  const ws=XLSX.utils.aoa_to_sheet(rows); ws['!cols']=[{wch:20},{wch:18},{wch:14},{wch:8},{wch:60}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Log');
+  XLSX.writeFile(wb,'log_สุ่ม_'+EVENT+'_'+stamp()+'.xlsx');
+};
+$('logClear').onclick=()=>{
+  if(!drawLog.length) return;
+  if(!confirm('ล้าง log การสุ่มในเครื่องนี้? (ข้อมูลใน Google Sheet ยังอยู่)')) return;
+  drawLog=[]; saveLog(); renderLog();
+};
 
 /* ---------- pool / stats ---------- */
 function rebuildPool(){
@@ -319,9 +380,9 @@ function setupColumns(){
     const t=hasH&&header[c]!=null&&String(header[c]).trim()!==''?String(header[c]).trim():'คอลัมน์ '+(c+1);
     N.add(new Option(t,c)); P.add(new Option(t,c)); E.add(new Option(t,c));
   }
-  N.value=guessCol(hasH,cols,/ชื่อ|name|ผู้สมัคร|นักวิ่ง|ผู้เข้าร่วม|fullname/i,'text');
-  P.value=guessCol(hasH,cols,/เบอร์|โทร|มือถือ|tel|phone|mobile|contact/i,'phone');
-  E.value=guessCol(hasH,cols,/อีเมล|e-?mail|mail/i,'email');
+  N.value=guessCol(hasH,cols,/first.?name|ชื่อจริง|ชื่อ|name|ผู้สมัคร|นักวิ่ง|ผู้เข้าร่วม/i,'text');
+  P.value=guessCol(hasH,cols,/last.?name|surname|นามสกุล|สกุล/i,'text');
+  E.value=guessCol(hasH,cols,/bib|หมายเลข|เลขวิ่ง|bib.?no/i,'text');
   $('colpick').style.display='block'; applyColumns();
 }
 function guessCol(hasH,cols,re,kind){
@@ -350,6 +411,7 @@ function applyColumns(){
 $('hasHeader').onchange=setupColumns;
 $('colName').onchange=$('colPhone').onchange=$('colEmail').onchange=applyColumns;
 $('n100').oninput=$('n15').oninput=()=>{updateStats();save();};
+$('logUrl').oninput=$('operator').oninput=save;
 $('dur').oninput=save;
 $('clear').onclick=()=>{ importRows=[]; records=[]; winnersBig=[]; winnersSpecial=[];
   $('colpick').style.display='none'; rebuildPool(); renderAll(); save(); };
@@ -368,6 +430,9 @@ $('drawSp').onclick =()=>drawTier('sp');
 
 function drawTier(tier){
   if(spinning) return;
+  if($('logUrl').value.trim() && !$('operator').value.trim()){
+    flash('กรุณาใส่ชื่อผู้กดสุ่มก่อน (ช่องบนซ้าย)'); $('operator').focus(); return;
+  }
   const isBig=tier==='big';
   const limit=isBig?getN('n100',100):getN('n15',15);
   const cur =isBig?winnersBig:winnersSpecial;
@@ -425,7 +490,19 @@ function revealWinners(picked,tier){
       reel.textContent='🎊 ได้ผู้โชคดี '+picked.length+' คน 🎊'; $('countdown').textContent='';
       stage.classList.remove('running'); rebuildPool(); save(); confetti(); burst();
       spinning=false; $('drawBig').disabled=$('drawSp').disabled=$('toAdmin').disabled=$('resetAll').disabled=false;
-      updateStats(); return;
+      updateStats();
+      // บันทึก log (ในเครื่อง + ส่งไป Google Sheet)
+      const ts=new Date().toLocaleString('th-TH');
+      const entry={
+        time: ts,
+        operator: $('operator').value.trim(),
+        prize: isBig?'รางวัลใหญ่':'รางวัลพิเศษ',
+        count: picked.length,
+        winners: picked.map(r=>disp(r)+(r.email?(' [BIB '+r.email+']'):'')).join(', ')
+      };
+      addLog(entry);
+      sendLog({operator:entry.operator,prize:entry.prize,count:entry.count,winners:entry.winners,clientTime:ts});
+      return;
     }
     const rec=picked[i]; arr.push(rec);
     reel.textContent='🎉 '+disp(rec);
@@ -456,13 +533,13 @@ $('resetAll').onclick=()=>{ if(spinning) return;
 /* ---------- export ---------- */
 function stamp(){const d=new Date(),p=x=>String(x).padStart(2,'0');return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes());}
 function exportXlsx(arr,label){
-  const data=[['ลำดับ','ชื่อ','เบอร์โทร','อีเมล'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
+  const data=[['ลำดับ','ชื่อ','นามสกุล','BIB'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
   const ws=XLSX.utils.aoa_to_sheet(data); ws['!cols']=[{wch:8},{wch:30},{wch:16},{wch:32}];
   const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,label);
   XLSX.writeFile(wb,'ผู้โชคดี_'+label+'_'+EVENT+'_'+stamp()+'.xlsx');
 }
 function exportCsv(arr,label){
-  const rows=[['ลำดับ','ชื่อ','เบอร์โทร','อีเมล'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
+  const rows=[['ลำดับ','ชื่อ','นามสกุล','BIB'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
   const csv='﻿'+rows.map(r=>r.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
   a.download='ผู้โชคดี_'+label+'_'+EVENT+'_'+stamp()+'.csv'; a.click();
@@ -498,12 +575,12 @@ $('embed').onclick=()=>{
 /* ---------- data.js แบบชื่ออย่างเดียว (ปลอดภัยสำหรับขึ้นเว็บสาธารณะ) ---------- */
 $('embedWeb').onclick=()=>{
   if(!records.length) return;
-  const safe=records.map(r=>({name:r.name,phone:'',email:''}));
-  const js='window.EMBEDDED_RECORDS='+JSON.stringify(safe)+';\n';
+  // ข้อมูลชุดนี้เป็น ชื่อ/นามสกุล/BIB (ไม่มีเบอร์โทร-อีเมล) จึงปลอดภัยขึ้นเว็บได้
+  const js='window.EMBEDDED_RECORDS='+JSON.stringify(records)+';\n';
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
   a.download='data.js'; a.click();
-  alert('สร้าง data.js (ชื่ออย่างเดียว) แล้ว '+safe.length.toLocaleString()+' รายชื่อ\n\nไฟล์นี้ตัดเบอร์/อีเมลออก ปลอดภัยสำหรับอัปขึ้นเว็บสาธารณะ\nนำไปอัปขึ้น GitHub แทน data.js ตัวเต็ม (ตัวเต็มเก็บไว้ในเครื่องเท่านั้น)');
+  alert('สร้าง data.js แล้ว '+records.length.toLocaleString()+' รายชื่อ (ชื่อ/นามสกุล/BIB)\n\nนำไปอัปขึ้น GitHub แทน data.js เดิม');
 };
 
 /* ---------- ตัวแปลง Lottie → .js ---------- */
@@ -541,6 +618,9 @@ function setupRunner(){
 /* ---------- init ---------- */
 setupRunner();
 load();
+// ถ้ามี config.js ตั้ง LOG_URL ไว้ และยังไม่ได้กรอกเอง → ใช้ค่าจาก config
+if(!$('logUrl').value && window.LOG_URL) $('logUrl').value=window.LOG_URL;
+loadLog(); renderLog();
 // ถ้ายังไม่มีข้อมูลที่จำไว้ แต่มีข้อมูลฝัง (data.js) ให้โหลดเข้าระบบเลย
 if(records.length===0 && Array.isArray(window.EMBEDDED_RECORDS) && window.EMBEDDED_RECORDS.length){
   records = window.EMBEDDED_RECORDS.slice();
