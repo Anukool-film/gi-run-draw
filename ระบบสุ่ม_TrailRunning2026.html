@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบสุ่มผู้โชคดี — Amazing Thailand GI Tour & Trail Running 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js"></script>
+<script src="runner-lottie.js" onerror="window.__noRunner=1"></script>
+<script>window.__BIG = window.RUNNER_LOTTIE || window.RUNNER_BIG || null;</script>
+<script src="runner2-lottie.js" onerror="window.__noRunner2=1"></script>
+<script>window.__SP = window.RUNNER_LOTTIE_2 || (window.RUNNER_LOTTIE && window.RUNNER_LOTTIE!==window.__BIG ? window.RUNNER_LOTTIE : null);</script>
+<script src="track-lottie.js" onerror="window.__noTrack=1"></script>
+<script>window.__TRACK = window.TRACK_LOTTIE || (window.RUNNER_LOTTIE && window.RUNNER_LOTTIE!==window.__BIG && window.RUNNER_LOTTIE!==window.__SP ? window.RUNNER_LOTTIE : null);</script>
+<style>
+  :root{
+    --pink:#ff2e8b; --orange:#ff9d3c;
+    --bg:#180e1e; --card:#221531; --line:#3d2647; --text:#fbf4fa; --muted:#c7a8d0;
+    --green:#ff8a3d; --red:#ff5d73;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{font-family:"Segoe UI","Sarabun",system-ui,sans-serif;background:transparent;
+       color:var(--text);min-height:100vh;padding:24px;position:relative}
+  .bg{position:fixed;inset:0;z-index:-1;background:url("bg-trail.jpg.jpg") center/cover no-repeat;
+      filter:blur(4px) brightness(.85) saturate(1.08);transform:scale(1.06)}
+  .bg::after{content:"";position:absolute;inset:0;
+      background:radial-gradient(1200px 720px at 50% -8%,rgba(40,20,48,.28) 0%,rgba(24,14,30,.60) 58%,rgba(20,11,26,.78) 100%)}
+  .wrap{max-width:1240px;margin:0 auto}
+  header{text-align:center;margin-bottom:18px;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+  .badge{display:inline-block;font-size:13px;letter-spacing:2px;color:#2a0c1c;
+    background:linear-gradient(90deg,var(--pink),var(--orange));padding:5px 16px;border-radius:999px;font-weight:700;margin-bottom:10px}
+  h1{font-size:28px;font-weight:800;background:linear-gradient(90deg,var(--pink),#fff,var(--orange));
+     -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}
+  .sub{color:#f0dbef;margin-top:6px;font-size:14px}
+
+  /* ===== กระจก ===== */
+  .card{background:linear-gradient(155deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
+    backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+    border:1px solid rgba(255,255,255,.20);border-radius:22px;padding:22px;
+    box-shadow:0 12px 48px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.28),inset 0 0 40px rgba(255,255,255,.04)}
+  .card h2{font-size:16px;margin-bottom:14px;color:var(--orange);display:flex;align-items:center;gap:8px;text-shadow:0 1px 8px rgba(0,0,0,.4)}
+
+  label{font-size:13px;color:var(--muted);display:block;margin:12px 0 6px}
+  textarea,input[type=number],select{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+    border-radius:12px;color:var(--text);padding:12px;font-size:14px;font-family:inherit;
+    backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  textarea:focus,input:focus,select:focus{outline:none;border-color:rgba(255,157,60,.6);background:rgba(255,255,255,.10)}
+  select{cursor:pointer} select option{background:#241430;color:var(--text)}
+  input[type=number]{max-width:170px}
+  .colpick{margin-top:12px;padding:12px 14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    border-radius:14px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .colpick .ttl{font-size:13px;color:var(--orange);font-weight:700;margin-bottom:8px}
+  .chk{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:2px 0}
+  .chk input{width:auto}
+  .fields{display:flex;gap:18px;flex-wrap:wrap}
+
+  button{cursor:pointer;border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;
+    font-family:inherit;transition:.15s transform,.15s filter}
+  button:hover{filter:brightness(1.08)} button:active{transform:scale(.97)}
+  button:disabled{opacity:.4;cursor:not-allowed;filter:none}
+  .btn-primary{background:linear-gradient(90deg,var(--pink),var(--orange));color:#2a0c1c;font-size:16px;padding:14px 24px}
+  .btn-ghost{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.22);color:var(--text);backdrop-filter:blur(6px)}
+  .btn-green{background:var(--green);color:#2a1205}
+  .btn-soft{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);color:var(--text);backdrop-filter:blur(6px)}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .filebtn{position:relative;overflow:hidden;display:inline-flex}
+  .filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+
+  .count-big{display:flex;align-items:baseline;gap:10px;background:linear-gradient(120deg,rgba(255,46,139,.22),rgba(255,157,60,.18));
+    border:1px solid rgba(255,255,255,.20);border-radius:16px;padding:16px 18px;margin-top:12px;
+    backdrop-filter:blur(8px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .count-big b{font-size:34px;color:#fff;font-weight:800;line-height:1;text-shadow:0 2px 12px rgba(255,46,139,.5)}
+  .count-big .lbl,.count-big .unit{color:#f0dbef;font-size:14px}
+  .err{color:var(--red);font-size:13px;margin-top:8px;min-height:18px}
+  .note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.6}
+
+  /* ===== ปุ่มสุ่ม 2 รางวัล ===== */
+  .drawbtns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  @media(max-width:760px){.drawbtns{grid-template-columns:1fr}}
+  .bigbtn{padding:22px;border-radius:20px;font-size:20px;font-weight:800;color:#2a0c1c;
+    box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.4);text-align:center;line-height:1.3}
+  .bigbtn small{display:block;font-size:13px;font-weight:600;opacity:.8;margin-top:4px}
+  .bigbtn.b1{background:linear-gradient(120deg,#ffcf5a,#ff9d3c)}
+  .bigbtn.b2{background:linear-gradient(120deg,#ff6fae,#ff2e8b)}
+
+  /* ===== เวทีสุ่ม ===== */
+  .stage{background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(20,11,26,.30));border:1px solid rgba(255,255,255,.18);
+    backdrop-filter:blur(10px);border-radius:18px;min-height:210px;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:18px;margin:0 0 16px;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+  .stage .idle{color:var(--muted);font-size:15px;position:relative;z-index:2}
+  .ground{position:absolute;inset:0;z-index:0;opacity:.45;pointer-events:none;overflow:hidden}
+  .ground svg{width:100%!important;height:100%!important}
+  .scene{width:100%;position:relative;z-index:2}
+  .tier-label{font-size:15px;font-weight:700;letter-spacing:1px;margin-bottom:4px}
+  .reel{font-size:32px;font-weight:800;color:#fff;letter-spacing:.5px;min-height:44px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .stage.spin .reel{animation:flick .09s linear infinite}
+  @keyframes flick{0%{opacity:.45;transform:translateY(-5px)}100%{opacity:1;transform:translateY(0)}}
+  .track{position:relative;height:64px;margin:14px 0 8px;border-bottom:3px dashed rgba(255,255,255,.22)}
+  .track::before{content:"";position:absolute;left:0;right:0;bottom:-3px;height:3px;
+    background:repeating-linear-gradient(90deg,transparent 0 14px,rgba(255,255,255,.10) 14px 28px)}
+  .runner{position:absolute;left:-7%;bottom:0;width:120px;height:120px;font-size:56px;line-height:120px;text-align:center;
+          will-change:left,transform;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+  .runner svg{width:100%!important;height:100%!important}
+  #runner svg{transform:scaleX(-1)!important}   /* flip เฉพาะ man running */
+  .flag{position:absolute;right:1%;bottom:6px;font-size:32px;opacity:.85}
+  .running .runner{animation:dash var(--dur,5s) linear forwards,bob .42s ease-in-out infinite}
+  @keyframes dash{from{left:-7%}to{left:88%}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-11px)}}
+  .cooldown{height:11px;background:rgba(255,255,255,.14);border-radius:999px;overflow:hidden}
+  .cooldown i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--orange))}
+  .countdown{font-size:15px;color:#ffe2c2;margin-top:9px;font-weight:700;min-height:20px}
+
+  /* ===== ผลลัพธ์ ===== */
+  .results{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.results{grid-template-columns:1fr}}
+  .rhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  .rhead .t{font-size:16px;font-weight:800}
+  .rhead .cnt{font-size:13px;color:var(--muted)}
+  .rhead .exp{display:flex;gap:6px}
+  .rhead .exp button{padding:7px 12px;font-size:12px}
+  .winners{max-height:330px;overflow:auto;border:1px solid rgba(255,255,255,.16);border-radius:14px;
+    background:rgba(255,255,255,.04);backdrop-filter:blur(6px)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.10);word-break:break-word}
+  th{position:sticky;top:0;background:rgba(58,34,68,.85);color:var(--orange);font-size:12px;backdrop-filter:blur(10px)}
+  tr:last-child td{border-bottom:none}
+  td.no{color:var(--orange);font-weight:700;width:46px}
+  .pop{animation:pop .35s ease}
+  @keyframes pop{0%{transform:translateX(-12px);opacity:0;background:#4a2752}100%{transform:none;opacity:1}}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+  .pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.2);border-radius:999px;
+    padding:8px 14px;font-size:13px;color:#f0dbef;backdrop-filter:blur(6px)}
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:50}
+  .hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<canvas id="fx"></canvas>
+<div class="wrap">
+  <header>
+    <div class="badge">AMAZING THAILAND 2026</div>
+    <h1>🏃 GI Tour &amp; Trail Running 2026 — ระบบสุ่มผู้โชคดี</h1>
+    <div class="sub">รางวัลใหญ่ 100 คน &nbsp;•&nbsp; รางวัลพิเศษ 15 คน</div>
+  </header>
+
+  <!-- ===================== หลังบ้าน (ADMIN) ===================== -->
+  <div class="card" id="admin">
+    <h2>🗂️ หลังบ้าน — อัปโหลดรายชื่อผู้เข้าร่วม</h2>
+
+    <div class="row">
+      <span class="filebtn">
+        <button class="btn-soft">📁 อัปโหลด Excel / CSV</button>
+        <input type="file" id="file" accept=".xlsx,.xls,.csv">
+      </span>
+      <button class="btn-ghost" id="clear">ล้างข้อมูล</button>
+    </div>
+
+    <div class="colpick" id="colpick" style="display:none">
+      <div class="ttl">⚙️ ตั้งค่าคอลัมน์จากไฟล์</div>
+      <div class="chk"><input type="checkbox" id="hasHeader" checked> แถวแรกเป็นหัวตาราง</div>
+      <label>คอลัมน์ชื่อ</label><select id="colName"></select>
+      <label>คอลัมน์เบอร์โทร</label><select id="colPhone"><option value="-1">— ไม่ใช้ —</option></select>
+      <label>คอลัมน์อีเมล</label><select id="colEmail"><option value="-1">— ไม่ใช้ —</option></select>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCount"></div>
+    </div>
+
+    <div class="count-big">
+      <span class="lbl">👥 ผู้เข้าร่วมทั้งหมด</span><b id="totalBig">0</b><span class="unit">คน</span>
+    </div>
+
+    <div class="fields">
+      <div><label>จำนวนรางวัลใหญ่</label><input type="number" id="n100" value="100" min="1"></div>
+      <div><label>จำนวนรางวัลพิเศษ</label><input type="number" id="n15" value="15" min="1"></div>
+      <div><label>ระยะเวลาสุ่ม (วินาที)</label><input type="number" id="dur" value="5" min="1" max="60"></div>
+    </div>
+
+    <div class="err" id="err"></div>
+
+    <div style="margin-top:16px" class="row">
+      <button class="btn-primary" id="toShow">▶ เข้าสู่หน้าจอสุ่ม</button>
+      <button class="btn-soft" id="embed" disabled>💾 ฝังข้อมูลถาวร (สร้าง data.js)</button>
+      <button class="btn-soft" id="embedWeb" disabled>🌐 data.js ขึ้นเว็บ (ชื่อล้วน-ปลอดภัย)</button>
+      <button class="btn-soft" id="mkRunner">🛠️ นักวิ่งรางวัลใหญ่ → .js</button>
+      <button class="btn-soft" id="mkRunner2">🛠️ นักวิ่งรางวัลพิเศษ → .js</button>
+      <input type="file" id="lottieFile" accept=".json" style="display:none">
+    </div>
+
+    <div class="note">
+      • หน้าจอสุ่ม (frontend) จะโชว์เฉพาะการสุ่มกับผู้โชคดี — ไม่แสดงรายชื่อผู้เข้าร่วมทั้งหมด<br>
+      • กันสุ่มซ้ำข้ามทั้ง 2 รางวัล (คนที่ถูกแล้วจะไม่ถูกสุ่มอีก) • ข้อมูลถูกจำไว้แม้รีเฟรชหน้า<br>
+      • <b>ฝังข้อมูลถาวร:</b> อัปโหลดครั้งเดียว → กดปุ่ม 💾 → นำ <b>data.js</b> วางในโฟลเดอร์เดียวกับระบบ → เปิดครั้งต่อไปข้อมูลโหลดเองอัตโนมัติ ไม่ต้องอัปโหลดอีก
+    </div>
+  </div>
+
+  <!-- ===================== หน้าจอสุ่ม (FRONTEND) ===================== -->
+  <div id="show" class="hidden">
+    <div class="topbar">
+      <span class="pill" id="poolPill">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
+      <div class="row">
+        <button class="btn-ghost" id="resetAll">รีเซ็ตผลทั้งหมด</button>
+        <button class="btn-ghost" id="toAdmin">⚙️ หลังบ้าน</button>
+      </div>
+    </div>
+
+    <div class="drawbtns">
+      <button class="bigbtn b1" id="drawBig">🏆 สุ่มรางวัลใหญ่<small id="lblBig">100 คน</small></button>
+      <button class="bigbtn b2" id="drawSp">⭐ สุ่มรางวัลพิเศษ<small id="lblSp">15 คน</small></button>
+    </div>
+
+    <div class="card" style="margin-bottom:16px">
+      <div class="stage" id="stage">
+        <div class="ground" id="ground"></div>
+        <div class="idle" id="stageMsg">เลือกปุ่มสุ่มรางวัลด้านบนเพื่อเริ่ม 🎲</div>
+        <div class="scene hidden" id="scene">
+          <div class="tier-label" id="tierLabel"></div>
+          <div class="reel" id="reel">&nbsp;</div>
+          <div class="track">
+            <div class="runner" id="runner">🏃</div>
+            <div class="runner" id="runner2" style="display:none"></div>
+            <span class="flag">🏁</span>
+          </div>
+          <div class="cooldown"><i id="cdbar"></i></div>
+          <div class="countdown" id="countdown"></div>
+        </div>
+      </div>
+
+      <div class="results">
+        <div>
+          <div class="rhead">
+            <span class="t" style="color:#ffcf5a">🏆 รางวัลใหญ่</span>
+            <span class="cnt" id="cntBig">0/100</span>
+            <span class="exp"><button class="btn-green" id="xlBig" disabled>Excel</button><button class="btn-soft" id="csvBig" disabled>CSV</button></span>
+          </div>
+          <div class="winners"><table>
+            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>เบอร์โทร</th><th>อีเมล</th></tr></thead>
+            <tbody id="wbBig"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">ยังไม่มีผู้โชคดี</td></tr></tbody>
+          </table></div>
+        </div>
+        <div>
+          <div class="rhead">
+            <span class="t" style="color:#ff6fae">⭐ รางวัลพิเศษ</span>
+            <span class="cnt" id="cntSp">0/15</span>
+            <span class="exp"><button class="btn-green" id="xlSp" disabled>Excel</button><button class="btn-soft" id="csvSp" disabled>CSV</button></span>
+          </div>
+          <div class="winners"><table>
+            <thead><tr><th class="no">#</th><th>ชื่อ</th><th>เบอร์โทร</th><th>อีเมล</th></tr></thead>
+            <tbody id="wbSp"><tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">ยังไม่มีผู้โชคดี</td></tr></tbody>
+          </table></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="data.js" onerror="window.__noData=1"></script>
+<script>
+const $ = id => document.getElementById(id);
+let importRows=[], records=[], pool=[];
+let winnersBig=[], winnersSpecial=[];
+let spinning=false;
+const EVENT='TrailRunning2026', LSKEY='giDrawData';
+
+const keyOf=r=>(r.name||'')+'|'+(r.phone||'')+'|'+(r.email||'');
+const disp =r=>r.name||r.phone||r.email||'';
+
+/* ---------- persistence ---------- */
+function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({
+  records,winnersBig,winnersSpecial,
+  n100:$('n100').value,n15:$('n15').value,dur:$('dur').value
+})); }catch(e){} }
+function load(){ try{
+  const d=JSON.parse(localStorage.getItem(LSKEY)||'null'); if(!d) return;
+  records=d.records||[]; winnersBig=d.winnersBig||[]; winnersSpecial=d.winnersSpecial||[];
+  if(d.n100)$('n100').value=d.n100; if(d.n15)$('n15').value=d.n15; if(d.dur)$('dur').value=d.dur;
+}catch(e){} }
+
+/* ---------- pool / stats ---------- */
+function rebuildPool(){
+  const won=new Set([...winnersBig,...winnersSpecial].map(keyOf));
+  pool=records.filter(r=>!won.has(keyOf(r)));
+  updateStats();
+}
+function getN(id,def){ const v=parseInt($(id).value,10); return (!v||v<1)?def:v; }
+function updateStats(){
+  $('totalBig').textContent=records.length.toLocaleString();
+  const n100=getN('n100',100), n15=getN('n15',15);
+  $('lblBig').textContent=n100+' คน'; $('lblSp').textContent=n15+' คน';
+  $('cntBig').textContent=winnersBig.length+'/'+n100;
+  $('cntSp').textContent=winnersSpecial.length+'/'+n15;
+  $('poolPill').textContent='👥 ผู้มีสิทธิ์ลุ้น '+pool.length.toLocaleString()+' คน';
+  $('xlBig').disabled=$('csvBig').disabled=winnersBig.length===0;
+  $('xlSp').disabled=$('csvSp').disabled=winnersSpecial.length===0;
+  $('embed').disabled=records.length===0;
+  $('embedWeb').disabled=records.length===0;
+}
+
+/* ---------- import (admin) ---------- */
+$('file').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return; $('err').textContent='';
+  const reader=new FileReader();
+  reader.onload=ev=>{ try{
+    const wb=XLSX.read(ev.target.result,{type:'array'});
+    const ws=wb.Sheets[wb.SheetNames[0]];
+    importRows=XLSX.utils.sheet_to_json(ws,{header:1,blankrows:false});
+    if(!importRows.length){ $('err').textContent='ไฟล์ว่างเปล่า'; return; }
+    setupColumns();
+  }catch(err){ $('err').textContent='อ่านไฟล์ไม่สำเร็จ: '+err.message; } };
+  reader.readAsArrayBuffer(f); e.target.value='';
+});
+const colCount=()=>importRows.reduce((m,r)=>Math.max(m,r.length),0);
+function setupColumns(){
+  const hasH=$('hasHeader').checked, header=importRows[0]||[], cols=colCount();
+  const N=$('colName'),P=$('colPhone'),E=$('colEmail');
+  N.innerHTML=''; P.innerHTML='<option value="-1">— ไม่ใช้ —</option>'; E.innerHTML='<option value="-1">— ไม่ใช้ —</option>';
+  for(let c=0;c<cols;c++){
+    const t=hasH&&header[c]!=null&&String(header[c]).trim()!==''?String(header[c]).trim():'คอลัมน์ '+(c+1);
+    N.add(new Option(t,c)); P.add(new Option(t,c)); E.add(new Option(t,c));
+  }
+  N.value=guessCol(hasH,cols,/ชื่อ|name|ผู้สมัคร|นักวิ่ง|ผู้เข้าร่วม|fullname/i,'text');
+  P.value=guessCol(hasH,cols,/เบอร์|โทร|มือถือ|tel|phone|mobile|contact/i,'phone');
+  E.value=guessCol(hasH,cols,/อีเมล|e-?mail|mail/i,'email');
+  $('colpick').style.display='block'; applyColumns();
+}
+function guessCol(hasH,cols,re,kind){
+  if(hasH){ const h=importRows[0]||[]; for(let c=0;c<cols;c++){ if(re.test(String(h[c]||''))) return String(c); } }
+  const data=importRows.slice(hasH?1:0).slice(0,300);
+  let best='-1',bs=(kind==='text'?-1:0.34);
+  for(let c=0;c<cols;c++){ let hit=0,tot=0;
+    data.forEach(r=>{ const v=r[c]; if(v!=null&&String(v).trim()!==''){ tot++; const s=String(v).trim();
+      if(kind==='email'){ if(/@/.test(s))hit++; }
+      else if(kind==='phone'){ if(/^[\d\s\-+()]{8,}$/.test(s))hit++; }
+      else { if(isNaN(Number(s.replace(/[, ]/g,''))))hit++; } }});
+    const sc=tot?hit/tot:0; if(sc>bs){bs=sc;best=String(c);}
+  }
+  if(kind==='text'&&best==='-1')best='0'; return best;
+}
+function applyColumns(){
+  if(!importRows.length) return;
+  const hasH=$('hasHeader').checked, nc=+$('colName').value, pc=+$('colPhone').value, ec=+$('colEmail').value;
+  const data=importRows.slice(hasH?1:0), get=(r,c)=>(c>=0&&r[c]!=null)?String(r[c]).trim():'';
+  records=data.map(r=>({name:get(r,nc),phone:get(r,pc),email:get(r,ec)})).filter(r=>r.name||r.phone||r.email);
+  // อัปโหลดใหม่ = เริ่มผลใหม่
+  winnersBig=[]; winnersSpecial=[];
+  $('colCount').textContent='✓ พบ '+records.length.toLocaleString()+' รายชื่อจากไฟล์';
+  rebuildPool(); save();
+}
+$('hasHeader').onchange=setupColumns;
+$('colName').onchange=$('colPhone').onchange=$('colEmail').onchange=applyColumns;
+$('n100').oninput=$('n15').oninput=()=>{updateStats();save();};
+$('dur').oninput=save;
+$('clear').onclick=()=>{ importRows=[]; records=[]; winnersBig=[]; winnersSpecial=[];
+  $('colpick').style.display='none'; rebuildPool(); renderAll(); save(); };
+
+/* ---------- screen switch ---------- */
+$('toShow').onclick=()=>{
+  if(records.length===0){ $('err').textContent='กรุณาอัปโหลดรายชื่อก่อน'; return; }
+  $('admin').classList.add('hidden'); $('show').classList.remove('hidden');
+  renderAll(); updateStats(); window.scrollTo(0,0);
+};
+$('toAdmin').onclick=()=>{ if(spinning) return; $('show').classList.add('hidden'); $('admin').classList.remove('hidden'); };
+
+/* ---------- draw ---------- */
+$('drawBig').onclick=()=>drawTier('big');
+$('drawSp').onclick =()=>drawTier('sp');
+
+function drawTier(tier){
+  if(spinning) return;
+  const isBig=tier==='big';
+  const limit=isBig?getN('n100',100):getN('n15',15);
+  const cur =isBig?winnersBig:winnersSpecial;
+  let need=limit-cur.length;
+  if(need<=0){ flash(isBig?'รางวัลใหญ่ครบแล้ว':'รางวัลพิเศษครบแล้ว'); return; }
+  if(pool.length===0){ flash('ไม่มีผู้มีสิทธิ์ลุ้นแล้ว'); return; }
+  if(need>pool.length) need=pool.length;
+
+  const arr=pool.slice();
+  for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
+  const picked=arr.slice(0,need);
+  startDraw(picked,tier);
+}
+function flash(msg){ const c=$('countdown'); $('scene').classList.remove('hidden'); $('stageMsg').classList.add('hidden'); c.textContent='⚠️ '+msg; }
+
+function startDraw(picked,tier){
+  spinning=true; $('drawBig').disabled=$('drawSp').disabled=$('toAdmin').disabled=$('resetAll').disabled=true;
+  const isBig=tier==='big';
+  const stage=$('stage'),reel=$('reel'),runner=$('runner'),cdbar=$('cdbar'),cdnum=$('countdown');
+  $('stageMsg').classList.add('hidden'); $('scene').classList.remove('hidden');
+  $('tierLabel').textContent=(isBig?'🏆 รางวัลใหญ่':'⭐ รางวัลพิเศษ')+' — กำลังสุ่ม '+picked.length+' คน';
+  $('tierLabel').style.color=isBig?'#ffcf5a':'#ff6fae';
+  stage.classList.add('spin','running');
+
+  const durSec=Math.min(60,Math.max(1,parseInt($('dur').value,10)||5)), dur=durSec*1000;
+  stage.style.setProperty('--dur',durSec+'s');
+  // เลือกนักวิ่งตามรางวัล (รางวัลพิเศษใช้ Jogging ถ้ามี)
+  const useSp=!isBig && runnerSp;
+  $('runner').style.display = useSp?'none':'';
+  $('runner2').style.display= useSp?'':'none';
+  curRunner = useSp?runnerSp:runnerBig;
+  ['runner','runner2'].forEach(id=>{const el=$(id);el.style.animation='none';void el.offsetWidth;el.style.animation='';});
+  if(curRunner) curRunner.goToAndPlay(0,true);
+  if(trackAnim) trackAnim.goToAndPlay(0,true);
+  cdbar.style.transition='none'; cdbar.style.width='0%'; void cdbar.offsetWidth;
+  cdbar.style.transition='width '+durSec+'s linear'; cdbar.style.width='100%';
+
+  const fp=pool.length?pool:picked, t0=(performance&&performance.now)?performance.now():Date.now();
+  const flick=setInterval(()=>{reel.textContent=disp(fp[Math.floor(Math.random()*fp.length)]);},80);
+  const cd=setInterval(()=>{ const now=(performance&&performance.now)?performance.now():Date.now();
+    const left=Math.max(0,(dur-(now-t0))/1000); cdnum.textContent='⏱️ กำลังวิ่งเข้าเส้นชัย... เหลือ '+left.toFixed(1)+' วินาที'; },100);
+
+  setTimeout(()=>{ clearInterval(flick); clearInterval(cd); stage.classList.remove('spin');
+    cdnum.textContent='🏁 ถึงเส้นชัย! กำลังประกาศผู้โชคดี...'; revealWinners(picked,tier); },dur);
+}
+
+function revealWinners(picked,tier){
+  const isBig=tier==='big', stage=$('stage'),reel=$('reel');
+  const arr=isBig?winnersBig:winnersSpecial, body=isBig?$('wbBig'):$('wbSp');
+  $('runner').style.animation='none'; $('runner2').style.animation='none';
+  if(runnerBig)runnerBig.stop(); if(runnerSp)runnerSp.stop(); if(trackAnim)trackAnim.stop();
+  const per=Math.max(45,Math.min(150,Math.floor(2800/picked.length))); let i=0;
+  const rev=setInterval(()=>{
+    if(i>=picked.length){ clearInterval(rev);
+      reel.textContent='🎊 ได้ผู้โชคดี '+picked.length+' คน 🎊'; $('countdown').textContent='';
+      stage.classList.remove('running'); rebuildPool(); save(); confetti(); burst();
+      spinning=false; $('drawBig').disabled=$('drawSp').disabled=$('toAdmin').disabled=$('resetAll').disabled=false;
+      updateStats(); return;
+    }
+    const rec=picked[i]; arr.push(rec);
+    reel.textContent='🎉 '+disp(rec);
+    appendRow(body,arr.length,rec); $((isBig?'cntBig':'cntSp')).textContent=arr.length+'/'+(isBig?getN('n100',100):getN('n15',15));
+    i++;
+  },per);
+}
+function appendRow(body,no,rec){
+  if(body.querySelector('td[colspan]')) body.innerHTML='';
+  const tr=document.createElement('tr'); tr.className='pop';
+  tr.innerHTML=`<td class="no">${no}</td><td>${esc(rec.name)}</td><td>${esc(rec.phone)}</td><td>${esc(rec.email)}</td>`;
+  body.appendChild(tr); const sc=body.parentElement.parentElement; sc.scrollTop=sc.scrollHeight;
+}
+function renderTier(body,arr){
+  if(arr.length===0){ body.innerHTML='<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">ยังไม่มีผู้โชคดี</td></tr>'; return; }
+  body.innerHTML=arr.map((w,i)=>`<tr><td class="no">${i+1}</td><td>${esc(w.name)}</td><td>${esc(w.phone)}</td><td>${esc(w.email)}</td></tr>`).join('');
+}
+function renderAll(){ renderTier($('wbBig'),winnersBig); renderTier($('wbSp'),winnersSpecial); }
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+$('resetAll').onclick=()=>{ if(spinning) return;
+  if((winnersBig.length||winnersSpecial.length)&&!confirm('ล้างผลผู้โชคดีทั้งสองรางวัล?')) return;
+  winnersBig=[]; winnersSpecial=[]; rebuildPool(); renderAll();
+  $('scene').classList.add('hidden'); $('stageMsg').classList.remove('hidden');
+  $('reel').innerHTML='&nbsp;'; $('countdown').textContent=''; save();
+};
+
+/* ---------- export ---------- */
+function stamp(){const d=new Date(),p=x=>String(x).padStart(2,'0');return d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'_'+p(d.getHours())+p(d.getMinutes());}
+function exportXlsx(arr,label){
+  const data=[['ลำดับ','ชื่อ','เบอร์โทร','อีเมล'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
+  const ws=XLSX.utils.aoa_to_sheet(data); ws['!cols']=[{wch:8},{wch:30},{wch:16},{wch:32}];
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,label);
+  XLSX.writeFile(wb,'ผู้โชคดี_'+label+'_'+EVENT+'_'+stamp()+'.xlsx');
+}
+function exportCsv(arr,label){
+  const rows=[['ลำดับ','ชื่อ','เบอร์โทร','อีเมล'],...arr.map((w,i)=>[i+1,w.name,w.phone,w.email])];
+  const csv='﻿'+rows.map(r=>r.map(c=>`"${String(c==null?'':c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='ผู้โชคดี_'+label+'_'+EVENT+'_'+stamp()+'.csv'; a.click();
+}
+$('xlBig').onclick=()=>exportXlsx(winnersBig,'รางวัลใหญ่');
+$('csvBig').onclick=()=>exportCsv(winnersBig,'รางวัลใหญ่');
+$('xlSp').onclick=()=>exportXlsx(winnersSpecial,'รางวัลพิเศษ');
+$('csvSp').onclick=()=>exportCsv(winnersSpecial,'รางวัลพิเศษ');
+
+/* ---------- confetti ---------- */
+const cv=$('fx'),ctx=cv.getContext('2d'); let parts=[];
+function resize(){cv.width=innerWidth;cv.height=innerHeight;} resize(); addEventListener('resize',resize);
+function spawn(x,y,n){const cs=['#ff2e8b','#ff9d3c','#fff','#ffd166','#7ad0ff','#ff6f91'];
+  for(let i=0;i<n;i++)parts.push({x,y,vx:(Math.random()-.5)*11,vy:Math.random()*-10-3,g:.25+Math.random()*.15,s:5+Math.random()*6,c:cs[Math.floor(Math.random()*cs.length)],life:120});
+  if(!raf)loop();}
+function confetti(){spawn(cv.width/2,cv.height/3,160);} function burst(){spawn(cv.width*.25,cv.height*.35,70);spawn(cv.width*.75,cv.height*.35,70);}
+let raf=0;
+function loop(){ctx.clearRect(0,0,cv.width,cv.height);
+  parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=p.g;p.life--;ctx.fillStyle=p.c;ctx.fillRect(p.x,p.y,p.s,p.s);});
+  parts=parts.filter(p=>p.life>0&&p.y<cv.height+20);
+  if(parts.length)raf=requestAnimationFrame(loop);else{raf=0;ctx.clearRect(0,0,cv.width,cv.height);}}
+
+/* ---------- ฝังข้อมูลถาวร ---------- */
+$('embed').onclick=()=>{
+  if(!records.length) return;
+  const js='window.EMBEDDED_RECORDS = '+JSON.stringify(records)+';\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
+  a.download='data.js'; a.click();
+  alert('สร้าง data.js แล้ว ('+records.length.toLocaleString()+' รายชื่อ)\n\nนำไฟล์ data.js ไปวางไว้โฟลเดอร์เดียวกับระบบ:\nD:\\GI RUN\\HTML\\\n\nจากนั้นเปิดระบบใหม่ ข้อมูลจะถูกฝังเข้าระบบอัตโนมัติ ไม่ต้องอัปโหลดอีก');
+};
+
+/* ---------- data.js แบบชื่ออย่างเดียว (ปลอดภัยสำหรับขึ้นเว็บสาธารณะ) ---------- */
+$('embedWeb').onclick=()=>{
+  if(!records.length) return;
+  const safe=records.map(r=>({name:r.name,phone:'',email:''}));
+  const js='window.EMBEDDED_RECORDS='+JSON.stringify(safe)+';\n';
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
+  a.download='data.js'; a.click();
+  alert('สร้าง data.js (ชื่ออย่างเดียว) แล้ว '+safe.length.toLocaleString()+' รายชื่อ\n\nไฟล์นี้ตัดเบอร์/อีเมลออก ปลอดภัยสำหรับอัปขึ้นเว็บสาธารณะ\nนำไปอัปขึ้น GitHub แทน data.js ตัวเต็ม (ตัวเต็มเก็บไว้ในเครื่องเท่านั้น)');
+};
+
+/* ---------- ตัวแปลง Lottie → .js ---------- */
+let __lottieTarget=null;
+function pickLottie(varName,fileName){ __lottieTarget={varName,fileName}; $('lottieFile').click(); }
+$('mkRunner').onclick =()=>pickLottie('RUNNER_LOTTIE','runner-lottie.js');
+$('mkRunner2').onclick=()=>pickLottie('RUNNER_LOTTIE_2','runner2-lottie.js');
+$('lottieFile').onchange=e=>{ const f=e.target.files[0]; if(!f||!__lottieTarget) return;
+  const r=new FileReader();
+  r.onload=ev=>{ try{
+    const obj=JSON.parse(ev.target.result);
+    const js='window.'+__lottieTarget.varName+'='+JSON.stringify(obj)+';\n';
+    const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
+    a.download=__lottieTarget.fileName; a.click();
+    alert('สร้าง '+__lottieTarget.fileName+' แล้ว\n\nนำไฟล์ไปวางในโฟลเดอร์เดียวกับระบบ:\nD:\\GI RUN\\HTML\\\n\nแล้วรีเฟรชหน้า');
+  }catch(err){ alert('ไฟล์ไม่ใช่ Lottie JSON ที่ถูกต้อง: '+err.message); } };
+  r.readAsText(f); e.target.value='';
+};
+
+/* ---------- นักวิ่ง Lottie + พื้นวิ่ง ---------- */
+let runnerBig=null, runnerSp=null, trackAnim=null, curRunner=null;
+function loadL(container,data,fallback,par){
+  if(typeof lottie==='undefined'||!data) return null;
+  try{ container.textContent='';
+    return lottie.loadAnimation({container,renderer:'svg',loop:true,autoplay:false,animationData:data,
+      rendererSettings: par?{preserveAspectRatio:par}:undefined});
+  }catch(e){ if(fallback) container.textContent=fallback; return null; }
+}
+function setupRunner(){
+  runnerBig=loadL($('runner'),  window.__BIG,   '🏃');
+  runnerSp =loadL($('runner2'), window.__SP,    '');
+  trackAnim=loadL($('ground'),  window.__TRACK, '', 'none'); // ยืดลู่วิ่งเต็มกรอบ
+}
+
+/* ---------- init ---------- */
+setupRunner();
+load();
+// ถ้ายังไม่มีข้อมูลที่จำไว้ แต่มีข้อมูลฝัง (data.js) ให้โหลดเข้าระบบเลย
+if(records.length===0 && Array.isArray(window.EMBEDDED_RECORDS) && window.EMBEDDED_RECORDS.length){
+  records = window.EMBEDDED_RECORDS.slice();
+}
+rebuildPool(); renderAll(); updateStats();
+// เปิดมาที่หน้าจอสุ่มเลยถ้ามีข้อมูลแล้ว (ไม่มีข้อมูล → ไปหน้าหลังบ้านให้อัปโหลดก่อน)
+if(records.length>0){
+  $('admin').classList.add('hidden');
+  $('show').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
