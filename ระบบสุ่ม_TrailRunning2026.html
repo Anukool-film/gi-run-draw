@@ -34,6 +34,9 @@
   h1{font-size:28px;font-weight:800;background:linear-gradient(90deg,var(--pink),#fff,var(--orange));
      -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}
   .sub{color:#f0dbef;margin-top:6px;font-size:14px}
+  .sub-main{font-size:22px;font-weight:800;color:#fff;margin-top:10px;letter-spacing:.3px;
+    text-shadow:0 2px 14px rgba(0,0,0,.55)}
+  @media(max-width:600px){.sub-main{font-size:18px}}
 
   /* ===== กระจก ===== */
   .card{background:linear-gradient(155deg,rgba(255,255,255,.12),rgba(255,255,255,.03));
@@ -55,6 +58,8 @@
   .chk{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin:2px 0}
   .chk input{width:auto}
   .fields{display:flex;gap:18px;flex-wrap:wrap}
+  .bucketgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px}
+  @media(max-width:760px){.bucketgrid{grid-template-columns:1fr}}
 
   button{cursor:pointer;border:none;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:700;
     font-family:inherit;transition:.15s transform,.15s filter}
@@ -79,7 +84,7 @@
   /* ===== ปุ่มสุ่ม 2 รางวัล ===== */
   .drawbtns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
   @media(max-width:760px){.drawbtns{grid-template-columns:1fr}}
-  .bigbtn{padding:22px;border-radius:20px;font-size:20px;font-weight:800;color:#2a0c1c;
+  .bigbtn{padding:22px;border-radius:20px;font-size:18px;font-weight:800;color:#2a0c1c;
     box-shadow:0 10px 34px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.4);text-align:center;line-height:1.3}
   .bigbtn small{display:block;font-size:13px;font-weight:600;opacity:.8;margin-top:4px}
   .bigbtn.b1{background:linear-gradient(120deg,#ffcf5a,#ff9d3c)}
@@ -133,43 +138,83 @@
   .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
   .pill{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.2);border-radius:999px;
     padding:8px 14px;font-size:13px;color:#f0dbef;backdrop-filter:blur(6px)}
+  /* ช่องชื่อผู้กดสุ่ม — เด่น */
+  #operator{width:300px;max-width:60vw;font-size:16px;font-weight:700;color:#fff;
+    background:rgba(255,255,255,.16);border:2px solid var(--orange);border-radius:14px;padding:13px 16px;
+    box-shadow:0 0 0 3px rgba(255,157,60,.20),0 6px 18px rgba(0,0,0,.35)}
+  #operator::placeholder{color:#ffe0c2;font-weight:600}
+  #operator:focus{outline:none;border-color:var(--pink);background:rgba(255,255,255,.22);
+    box-shadow:0 0 0 3px rgba(255,46,139,.28),0 6px 18px rgba(0,0,0,.4)}
+  #operator.need{animation:pulseName 1.1s ease-in-out infinite}
+  @keyframes pulseName{0%,100%{box-shadow:0 0 0 3px rgba(255,157,60,.22),0 6px 18px rgba(0,0,0,.35)}
+    50%{box-shadow:0 0 0 7px rgba(255,46,139,.5),0 6px 22px rgba(0,0,0,.45)}}
   #fx{position:fixed;inset:0;pointer-events:none;z-index:50}
   .hidden{display:none!important}
+  /* popup modal */
+  .modal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+    background:rgba(10,6,14,.62);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+  .modal-box{background:linear-gradient(155deg,rgba(45,27,58,.97),rgba(24,14,30,.97));
+    border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:28px 30px;max-width:430px;width:90%;
+    text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.25);animation:popIn .2s ease}
+  @keyframes popIn{0%{transform:scale(.9);opacity:0}100%{transform:scale(1);opacity:1}}
+  .modal-ico{font-size:40px;margin-bottom:10px}
+  .modal-msg{font-size:18px;font-weight:700;line-height:1.55;color:#fff;margin-bottom:20px}
 </style>
 </head>
 <body>
 <div class="bg"></div>
 <canvas id="fx"></canvas>
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-ico">📝</div>
+    <div class="modal-msg" id="modalMsg"></div>
+    <button class="btn-primary" id="modalOk">ตกลง</button>
+  </div>
+</div>
 <div class="wrap">
   <header>
     <div class="badge">AMAZING THAILAND 2026</div>
-    <h1>🏃 GI Tour &amp; Trail Running 2026 — ระบบสุ่มผู้โชคดี</h1>
-    <div class="sub">รางวัลใหญ่ 100 คน &nbsp;•&nbsp; รางวัลพิเศษ 15 คน</div>
+    <h1>🏃 GI Tour &amp; Trail Running 2026</h1>
+    <div class="sub sub-main">ระบบสุ่มรายชื่อผู้โชคดี จากกิจกรรม Virtual Run</div>
   </header>
 
   <!-- ===================== หลังบ้าน (ADMIN) ===================== -->
   <div class="card" id="admin">
     <h2>🗂️ หลังบ้าน — อัปโหลดรายชื่อผู้เข้าร่วม</h2>
 
-    <div class="row">
-      <span class="filebtn">
-        <button class="btn-soft">📁 อัปโหลด Excel / CSV</button>
-        <input type="file" id="file" accept=".xlsx,.xls,.csv">
-      </span>
-      <button class="btn-ghost" id="clear">ล้างข้อมูล</button>
-    </div>
-
-    <div class="colpick" id="colpick" style="display:none">
-      <div class="ttl">⚙️ ตั้งค่าคอลัมน์จากไฟล์</div>
-      <div class="chk"><input type="checkbox" id="hasHeader" checked> แถวแรกเป็นหัวตาราง</div>
-      <label>คอลัมน์ชื่อ</label><select id="colName"></select>
-      <label>คอลัมน์นามสกุล</label><select id="colPhone"><option value="-1">— ไม่ใช้ —</option></select>
-      <label>คอลัมน์ BIB</label><select id="colEmail"><option value="-1">— ไม่ใช้ —</option></select>
-      <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCount"></div>
-    </div>
-
-    <div class="count-big">
-      <span class="lbl">👥 ผู้เข้าร่วมทั้งหมด</span><b id="totalBig">0</b><span class="unit">คน</span>
+    <div class="bucketgrid">
+      <!-- ถัง 100 -->
+      <div class="colpick" style="display:block">
+        <div class="ttl">🏆 ถัง 100 — รายชื่อรางวัลใหญ่</div>
+        <div class="row" style="margin-bottom:8px">
+          <span class="filebtn"><button class="btn-soft">📁 อัปโหลดไฟล์</button><input type="file" id="fileBig" accept=".xlsx,.xls,.csv"></span>
+          <button class="btn-ghost" id="clearBig">ล้าง</button>
+        </div>
+        <div id="colpickBig" style="display:none">
+          <div class="chk"><input type="checkbox" id="hasHeaderBig" checked> แถวแรกเป็นหัวตาราง</div>
+          <label>คอลัมน์ชื่อ</label><select id="colNameBig"></select>
+          <label>คอลัมน์นามสกุล</label><select id="colPhoneBig"><option value="-1">— ไม่ใช้ —</option></select>
+          <label>คอลัมน์ BIB</label><select id="colEmailBig"><option value="-1">— ไม่ใช้ —</option></select>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCountBig"></div>
+        </div>
+        <div class="count-big" style="margin-top:10px"><span class="lbl">👥 ถัง 100</span><b id="totalBigCount">0</b><span class="unit">คน</span></div>
+      </div>
+      <!-- ถัง 15 -->
+      <div class="colpick" style="display:block">
+        <div class="ttl">⭐ ถัง 15 — รายชื่อรางวัลพิเศษ</div>
+        <div class="row" style="margin-bottom:8px">
+          <span class="filebtn"><button class="btn-soft">📁 อัปโหลดไฟล์</button><input type="file" id="fileSp" accept=".xlsx,.xls,.csv"></span>
+          <button class="btn-ghost" id="clearSp">ล้าง</button>
+        </div>
+        <div id="colpickSp" style="display:none">
+          <div class="chk"><input type="checkbox" id="hasHeaderSp" checked> แถวแรกเป็นหัวตาราง</div>
+          <label>คอลัมน์ชื่อ</label><select id="colNameSp"></select>
+          <label>คอลัมน์นามสกุล</label><select id="colPhoneSp"><option value="-1">— ไม่ใช้ —</option></select>
+          <label>คอลัมน์ BIB</label><select id="colEmailSp"><option value="-1">— ไม่ใช้ —</option></select>
+          <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCountSp"></div>
+        </div>
+        <div class="count-big" style="margin-top:10px"><span class="lbl">👥 ถัง 15</span><b id="totalSpCount">0</b><span class="unit">คน</span></div>
+      </div>
     </div>
 
     <div class="fields">
@@ -194,7 +239,7 @@
 
     <div class="note">
       • หน้าจอสุ่ม (frontend) จะโชว์เฉพาะการสุ่มกับผู้โชคดี — ไม่แสดงรายชื่อผู้เข้าร่วมทั้งหมด<br>
-      • กันสุ่มซ้ำข้ามทั้ง 2 รางวัล (คนที่ถูกแล้วจะไม่ถูกสุ่มอีก) • ข้อมูลถูกจำไว้แม้รีเฟรชหน้า<br>
+      • <b>2 ถังแยกกัน:</b> ถัง 100 สุ่มจากรายชื่อไฟล์หนึ่ง / ถัง 15 สุ่มจากอีกไฟล์ • กันซ้ำภายในถังเดียวกัน • ข้อมูลถูกจำไว้แม้รีเฟรช<br>
       • <b>ฝังข้อมูลถาวร:</b> อัปโหลดครั้งเดียว → กดปุ่ม 💾 → นำ <b>data.js</b> วางในโฟลเดอร์เดียวกับระบบ → เปิดครั้งต่อไปข้อมูลโหลดเองอัตโนมัติ ไม่ต้องอัปโหลดอีก
     </div>
 
@@ -219,18 +264,17 @@
   <div id="show" class="hidden">
     <div class="topbar">
       <div class="row" style="gap:10px">
-        <input type="text" id="operator" placeholder="👤 ชื่อผู้กดสุ่ม" style="max-width:200px">
+        <input type="text" id="operator" placeholder="👤 พิมพ์ชื่อผู้กดสุ่มที่นี่">
         <span class="pill" id="poolPill">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
       </div>
       <div class="row">
         <button class="btn-ghost" id="resetAll">รีเซ็ตผลทั้งหมด</button>
-        <button class="btn-ghost" id="toAdmin">⚙️ หลังบ้าน</button>
       </div>
     </div>
 
     <div class="drawbtns">
-      <button class="bigbtn b1" id="drawBig">🏆 สุ่มรางวัลใหญ่<small id="lblBig">100 คน</small></button>
-      <button class="bigbtn b2" id="drawSp">⭐ สุ่มรางวัลพิเศษ<small id="lblSp">15 คน</small></button>
+      <button class="bigbtn b1" id="drawBig">🏆 สุ่มรายชื่อผู้โชคดี ได้รับรางวัล GI SET<small id="lblBig">จำนวน 100 รางวัล</small></button>
+      <button class="bigbtn b2" id="drawSp">⭐ สุ่มรายชื่อผู้โชคดี ได้รับ Voucher ที่พัก<small id="lblSp">จำนวน 15 รางวัล</small></button>
     </div>
 
     <div class="card" style="margin-bottom:16px">
@@ -281,7 +325,7 @@
 <script src="data.js" onerror="window.__noData=1"></script>
 <script>
 const $ = id => document.getElementById(id);
-let importRows=[], records=[], pool=[];
+let recordsBig=[], recordsSpecial=[], poolBig=[], poolSpecial=[];
 let winnersBig=[], winnersSpecial=[];
 let spinning=false;
 const EVENT='TrailRunning2026', LSKEY='giDrawData';
@@ -289,15 +333,21 @@ const EVENT='TrailRunning2026', LSKEY='giDrawData';
 const keyOf=r=>(r.name||'')+'|'+(r.phone||'')+'|'+(r.email||'');
 const disp =r=>[r.name,r.phone].filter(Boolean).join(' ')||r.email||''; // ชื่อ + นามสกุล
 
+/* ---------- popup modal ---------- */
+function showModal(msg,ico){ $('modalMsg').textContent=msg; $('modal').querySelector('.modal-ico').textContent=ico||'📝'; $('modal').classList.remove('hidden'); }
+$('modalOk').onclick=()=>{ $('modal').classList.add('hidden'); const o=$('operator'); if(o){ o.focus(); o.scrollIntoView({block:'center',behavior:'smooth'}); } };
+$('modal').addEventListener('click',e=>{ if(e.target===$('modal')) $('modalOk').onclick(); });
+
 /* ---------- persistence ---------- */
 function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({
-  records,winnersBig,winnersSpecial,
+  recordsBig,recordsSpecial,winnersBig,winnersSpecial,
   n100:$('n100').value,n15:$('n15').value,dur:$('dur').value,
   logUrl:$('logUrl').value, operator:$('operator').value
 })); }catch(e){} }
 function load(){ try{
   const d=JSON.parse(localStorage.getItem(LSKEY)||'null'); if(!d) return;
-  records=d.records||[]; winnersBig=d.winnersBig||[]; winnersSpecial=d.winnersSpecial||[];
+  recordsBig=d.recordsBig||d.records||[]; recordsSpecial=d.recordsSpecial||[];
+  winnersBig=d.winnersBig||[]; winnersSpecial=d.winnersSpecial||[];
   if(d.n100)$('n100').value=d.n100; if(d.n15)$('n15').value=d.n15; if(d.dur)$('dur').value=d.dur;
   if(d.logUrl)$('logUrl').value=d.logUrl; if(d.operator)$('operator').value=d.operator;
 }catch(e){} }
@@ -340,89 +390,102 @@ $('logClear').onclick=()=>{
 
 /* ---------- pool / stats ---------- */
 function rebuildPool(){
-  const won=new Set([...winnersBig,...winnersSpecial].map(keyOf));
-  pool=records.filter(r=>!won.has(keyOf(r)));
+  const wB=new Set(winnersBig.map(keyOf)); poolBig=recordsBig.filter(r=>!wB.has(keyOf(r)));
+  const wS=new Set(winnersSpecial.map(keyOf)); poolSpecial=recordsSpecial.filter(r=>!wS.has(keyOf(r)));
   updateStats();
 }
 function getN(id,def){ const v=parseInt($(id).value,10); return (!v||v<1)?def:v; }
 function updateStats(){
-  $('totalBig').textContent=records.length.toLocaleString();
+  if($('totalBigCount')) $('totalBigCount').textContent=recordsBig.length.toLocaleString();
+  if($('totalSpCount')) $('totalSpCount').textContent=recordsSpecial.length.toLocaleString();
   const n100=getN('n100',100), n15=getN('n15',15);
-  $('lblBig').textContent=n100+' คน'; $('lblSp').textContent=n15+' คน';
+  $('lblBig').textContent='จำนวน '+n100+' รางวัล'; $('lblSp').textContent='จำนวน '+n15+' รางวัล';
   $('cntBig').textContent=winnersBig.length+'/'+n100;
   $('cntSp').textContent=winnersSpecial.length+'/'+n15;
-  $('poolPill').textContent='👥 ผู้มีสิทธิ์ลุ้น '+pool.length.toLocaleString()+' คน';
+  $('poolPill').textContent='👥 ผู้มีสิทธิ์ลุ้นรวม '+(poolBig.length+poolSpecial.length).toLocaleString()+' คน';
   $('xlBig').disabled=$('csvBig').disabled=winnersBig.length===0;
   $('xlSp').disabled=$('csvSp').disabled=winnersSpecial.length===0;
-  $('embed').disabled=records.length===0;
-  $('embedWeb').disabled=records.length===0;
+  const has=recordsBig.length>0||recordsSpecial.length>0;
+  $('embed').disabled=!has; $('embedWeb').disabled=!has;
 }
 
-/* ---------- import (admin) ---------- */
-$('file').addEventListener('change',e=>{
-  const f=e.target.files[0]; if(!f) return; $('err').textContent='';
-  const reader=new FileReader();
-  reader.onload=ev=>{ try{
-    const wb=XLSX.read(ev.target.result,{type:'array'});
-    const ws=wb.Sheets[wb.SheetNames[0]];
-    importRows=XLSX.utils.sheet_to_json(ws,{header:1,blankrows:false});
-    if(!importRows.length){ $('err').textContent='ไฟล์ว่างเปล่า'; return; }
-    setupColumns();
-  }catch(err){ $('err').textContent='อ่านไฟล์ไม่สำเร็จ: '+err.message; } };
-  reader.readAsArrayBuffer(f); e.target.value='';
-});
-const colCount=()=>importRows.reduce((m,r)=>Math.max(m,r.length),0);
-function setupColumns(){
-  const hasH=$('hasHeader').checked, header=importRows[0]||[], cols=colCount();
-  const N=$('colName'),P=$('colPhone'),E=$('colEmail');
+/* ---------- import แบบ 2 ถัง ---------- */
+const BUCKETS={
+  big:{rows:[],fileId:'fileBig',hdrId:'hasHeaderBig',nameId:'colNameBig',phoneId:'colPhoneBig',emailId:'colEmailBig',pickId:'colpickBig',cntId:'colCountBig',isBig:true},
+  sp :{rows:[],fileId:'fileSp', hdrId:'hasHeaderSp', nameId:'colNameSp', phoneId:'colPhoneSp', emailId:'colEmailSp', pickId:'colpickSp', cntId:'colCountSp', isBig:false}
+};
+const colCountOf=rows=>rows.reduce((m,r)=>Math.max(m,r.length),0);
+function setupColumns(bk){
+  const rows=bk.rows, hasH=$(bk.hdrId).checked, header=rows[0]||[], cols=colCountOf(rows);
+  const N=$(bk.nameId),P=$(bk.phoneId),E=$(bk.emailId);
   N.innerHTML=''; P.innerHTML='<option value="-1">— ไม่ใช้ —</option>'; E.innerHTML='<option value="-1">— ไม่ใช้ —</option>';
   for(let c=0;c<cols;c++){
     const t=hasH&&header[c]!=null&&String(header[c]).trim()!==''?String(header[c]).trim():'คอลัมน์ '+(c+1);
     N.add(new Option(t,c)); P.add(new Option(t,c)); E.add(new Option(t,c));
   }
-  N.value=guessCol(hasH,cols,/first.?name|ชื่อจริง|ชื่อ|name|ผู้สมัคร|นักวิ่ง|ผู้เข้าร่วม/i,'text');
-  P.value=guessCol(hasH,cols,/last.?name|surname|นามสกุล|สกุล/i,'text');
-  E.value=guessCol(hasH,cols,/bib|หมายเลข|เลขวิ่ง|bib.?no/i,'text');
-  $('colpick').style.display='block'; applyColumns();
+  N.value=guessCol(rows,hasH,cols,/first.?name|ชื่อจริง|ชื่อ|name|ผู้สมัคร|นักวิ่ง|ผู้เข้าร่วม/i);
+  P.value=guessCol(rows,hasH,cols,/last.?name|surname|นามสกุล|สกุล/i);
+  E.value=guessCol(rows,hasH,cols,/bib|หมายเลข|เลขวิ่ง|bib.?no/i);
+  $(bk.pickId).style.display='block'; applyColumns(bk);
 }
-function guessCol(hasH,cols,re,kind){
-  if(hasH){ const h=importRows[0]||[]; for(let c=0;c<cols;c++){ if(re.test(String(h[c]||''))) return String(c); } }
-  const data=importRows.slice(hasH?1:0).slice(0,300);
-  let best='-1',bs=(kind==='text'?-1:0.34);
+function guessCol(rows,hasH,cols,re){
+  if(hasH){ const h=rows[0]||[]; for(let c=0;c<cols;c++){ if(re.test(String(h[c]||''))) return String(c); } }
+  const data=rows.slice(hasH?1:0).slice(0,300);
+  let best='-1',bs=-1;
   for(let c=0;c<cols;c++){ let hit=0,tot=0;
-    data.forEach(r=>{ const v=r[c]; if(v!=null&&String(v).trim()!==''){ tot++; const s=String(v).trim();
-      if(kind==='email'){ if(/@/.test(s))hit++; }
-      else if(kind==='phone'){ if(/^[\d\s\-+()]{8,}$/.test(s))hit++; }
-      else { if(isNaN(Number(s.replace(/[, ]/g,''))))hit++; } }});
+    data.forEach(r=>{ const v=r[c]; if(v!=null&&String(v).trim()!==''){ tot++; if(isNaN(Number(String(v).trim().replace(/[, ]/g,''))))hit++; }});
     const sc=tot?hit/tot:0; if(sc>bs){bs=sc;best=String(c);}
   }
-  if(kind==='text'&&best==='-1')best='0'; return best;
+  if(best==='-1')best='0'; return best;
 }
-function applyColumns(){
-  if(!importRows.length) return;
-  const hasH=$('hasHeader').checked, nc=+$('colName').value, pc=+$('colPhone').value, ec=+$('colEmail').value;
-  const data=importRows.slice(hasH?1:0), get=(r,c)=>(c>=0&&r[c]!=null)?String(r[c]).trim():'';
-  records=data.map(r=>({name:get(r,nc),phone:get(r,pc),email:get(r,ec)})).filter(r=>r.name||r.phone||r.email);
-  // อัปโหลดใหม่ = เริ่มผลใหม่
-  winnersBig=[]; winnersSpecial=[];
-  $('colCount').textContent='✓ พบ '+records.length.toLocaleString()+' รายชื่อจากไฟล์';
+function applyColumns(bk){
+  const rows=bk.rows; if(!rows.length) return;
+  const hasH=$(bk.hdrId).checked, nc=+$(bk.nameId).value, pc=+$(bk.phoneId).value, ec=+$(bk.emailId).value;
+  const data=rows.slice(hasH?1:0), get=(r,c)=>(c>=0&&r[c]!=null)?String(r[c]).trim():'';
+  const recs=data.map(r=>({name:get(r,nc),phone:get(r,pc),email:get(r,ec)})).filter(r=>r.name||r.phone||r.email);
+  if(bk.isBig){ recordsBig=recs; winnersBig=[]; } else { recordsSpecial=recs; winnersSpecial=[]; }
+  $(bk.cntId).textContent='✓ พบ '+recs.length.toLocaleString()+' รายชื่อ';
   rebuildPool(); save();
 }
-$('hasHeader').onchange=setupColumns;
-$('colName').onchange=$('colPhone').onchange=$('colEmail').onchange=applyColumns;
+function wireBucket(bk){
+  $(bk.fileId).addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return; $('err').textContent='';
+    const rd=new FileReader();
+    rd.onload=ev=>{ try{
+      const wb=XLSX.read(ev.target.result,{type:'array'}); const ws=wb.Sheets[wb.SheetNames[0]];
+      bk.rows=XLSX.utils.sheet_to_json(ws,{header:1,blankrows:false});
+      if(!bk.rows.length){ $('err').textContent='ไฟล์ว่างเปล่า'; return; }
+      setupColumns(bk);
+    }catch(err){ $('err').textContent='อ่านไฟล์ไม่สำเร็จ: '+err.message; } };
+    rd.readAsArrayBuffer(f); e.target.value='';
+  });
+  $(bk.hdrId).onchange=()=>setupColumns(bk);
+  $(bk.nameId).onchange=$(bk.phoneId).onchange=$(bk.emailId).onchange=()=>applyColumns(bk);
+}
+wireBucket(BUCKETS.big); wireBucket(BUCKETS.sp);
+$('clearBig').onclick=()=>{ BUCKETS.big.rows=[]; recordsBig=[]; winnersBig=[]; $('colpickBig').style.display='none'; $('colCountBig').textContent=''; rebuildPool(); renderAll(); save(); };
+$('clearSp').onclick =()=>{ BUCKETS.sp.rows=[];  recordsSpecial=[]; winnersSpecial=[]; $('colpickSp').style.display='none'; $('colCountSp').textContent=''; rebuildPool(); renderAll(); save(); };
 $('n100').oninput=$('n15').oninput=()=>{updateStats();save();};
-$('logUrl').oninput=$('operator').oninput=save;
+$('logUrl').oninput=save;
+$('operator').oninput=()=>{ if($('operator').value.trim()) $('operator').classList.remove('need'); save(); };
 $('dur').oninput=save;
-$('clear').onclick=()=>{ importRows=[]; records=[]; winnersBig=[]; winnersSpecial=[];
-  $('colpick').style.display='none'; rebuildPool(); renderAll(); save(); };
 
-/* ---------- screen switch ---------- */
+/* ---------- screen switch + routing (#backend = หลังบ้าน) ---------- */
+function goAdmin(){ $('show').classList.add('hidden'); $('admin').classList.remove('hidden'); window.scrollTo(0,0); }
+function goShow(){ $('admin').classList.add('hidden'); $('show').classList.remove('hidden'); renderAll(); updateStats(); window.scrollTo(0,0); }
+function isBackendRoute(){ return /#\/?(backend|admin)/i.test(location.hash); }
+function applyRoute(){
+  if(spinning) return;
+  if(isBackendRoute()) goAdmin();
+  else if(recordsBig.length>0 || recordsSpecial.length>0) goShow();
+  else goAdmin(); // ยังไม่มีข้อมูล → ให้ไปหลังบ้านอัปโหลดก่อน
+}
+window.addEventListener('hashchange',applyRoute);
 $('toShow').onclick=()=>{
-  if(records.length===0){ $('err').textContent='กรุณาอัปโหลดรายชื่อก่อน'; return; }
-  $('admin').classList.add('hidden'); $('show').classList.remove('hidden');
-  renderAll(); updateStats(); window.scrollTo(0,0);
+  if(recordsBig.length===0 && recordsSpecial.length===0){ $('err').textContent='กรุณาอัปโหลดรายชื่ออย่างน้อย 1 ถัง'; return; }
+  try{ history.replaceState(null,'',location.pathname+location.search); }catch(e){} // ออกจากโหมดหลังบ้าน
+  goShow();
 };
-$('toAdmin').onclick=()=>{ if(spinning) return; $('show').classList.add('hidden'); $('admin').classList.remove('hidden'); };
 
 /* ---------- draw ---------- */
 $('drawBig').onclick=()=>drawTier('big');
@@ -430,18 +493,21 @@ $('drawSp').onclick =()=>drawTier('sp');
 
 function drawTier(tier){
   if(spinning) return;
-  if($('logUrl').value.trim() && !$('operator').value.trim()){
-    flash('กรุณาใส่ชื่อผู้กดสุ่มก่อน (ช่องบนซ้าย)'); $('operator').focus(); return;
+  if(!$('operator').value.trim()){
+    showModal('กรุณาระบุชื่อผู้ทำการสุ่มก่อนเริ่มจับรางวัล','📝');
+    $('operator').classList.add('need');
+    return;
   }
   const isBig=tier==='big';
   const limit=isBig?getN('n100',100):getN('n15',15);
   const cur =isBig?winnersBig:winnersSpecial;
+  const poolT=isBig?poolBig:poolSpecial;
   let need=limit-cur.length;
-  if(need<=0){ flash(isBig?'รางวัลใหญ่ครบแล้ว':'รางวัลพิเศษครบแล้ว'); return; }
-  if(pool.length===0){ flash('ไม่มีผู้มีสิทธิ์ลุ้นแล้ว'); return; }
-  if(need>pool.length) need=pool.length;
+  if(need<=0){ flash(isBig?'ถัง 100 ครบแล้ว':'ถัง 15 ครบแล้ว'); return; }
+  if(poolT.length===0){ flash(isBig?'ถัง 100 ยังไม่มีรายชื่อ (อัปโหลดในหลังบ้าน)':'ถัง 15 ยังไม่มีรายชื่อ (อัปโหลดในหลังบ้าน)'); return; }
+  if(need>poolT.length) need=poolT.length;
 
-  const arr=pool.slice();
+  const arr=poolT.slice();
   for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}
   const picked=arr.slice(0,need);
   startDraw(picked,tier);
@@ -449,7 +515,7 @@ function drawTier(tier){
 function flash(msg){ const c=$('countdown'); $('scene').classList.remove('hidden'); $('stageMsg').classList.add('hidden'); c.textContent='⚠️ '+msg; }
 
 function startDraw(picked,tier){
-  spinning=true; $('drawBig').disabled=$('drawSp').disabled=$('toAdmin').disabled=$('resetAll').disabled=true;
+  spinning=true; $('drawBig').disabled=$('drawSp').disabled=$('resetAll').disabled=true;
   const isBig=tier==='big';
   const stage=$('stage'),reel=$('reel'),runner=$('runner'),cdbar=$('cdbar'),cdnum=$('countdown');
   $('stageMsg').classList.add('hidden'); $('scene').classList.remove('hidden');
@@ -470,7 +536,8 @@ function startDraw(picked,tier){
   cdbar.style.transition='none'; cdbar.style.width='0%'; void cdbar.offsetWidth;
   cdbar.style.transition='width '+durSec+'s linear'; cdbar.style.width='100%';
 
-  const fp=pool.length?pool:picked, t0=(performance&&performance.now)?performance.now():Date.now();
+  const poolT=isBig?poolBig:poolSpecial;
+  const fp=poolT.length?poolT:picked, t0=(performance&&performance.now)?performance.now():Date.now();
   const flick=setInterval(()=>{reel.textContent=disp(fp[Math.floor(Math.random()*fp.length)]);},80);
   const cd=setInterval(()=>{ const now=(performance&&performance.now)?performance.now():Date.now();
     const left=Math.max(0,(dur-(now-t0))/1000); cdnum.textContent='⏱️ กำลังวิ่งเข้าเส้นชัย... เหลือ '+left.toFixed(1)+' วินาที'; },100);
@@ -489,7 +556,7 @@ function revealWinners(picked,tier){
     if(i>=picked.length){ clearInterval(rev);
       reel.textContent='🎊 ได้ผู้โชคดี '+picked.length+' คน 🎊'; $('countdown').textContent='';
       stage.classList.remove('running'); rebuildPool(); save(); confetti(); burst();
-      spinning=false; $('drawBig').disabled=$('drawSp').disabled=$('toAdmin').disabled=$('resetAll').disabled=false;
+      spinning=false; $('drawBig').disabled=$('drawSp').disabled=$('resetAll').disabled=false;
       updateStats();
       // บันทึก log (ในเครื่อง + ส่งไป Google Sheet)
       const ts=new Date().toLocaleString('th-TH');
@@ -563,24 +630,24 @@ function loop(){ctx.clearRect(0,0,cv.width,cv.height);
   if(parts.length)raf=requestAnimationFrame(loop);else{raf=0;ctx.clearRect(0,0,cv.width,cv.height);}}
 
 /* ---------- ฝังข้อมูลถาวร ---------- */
+function makeDataJs(){
+  return 'window.EMBEDDED_BIG='+JSON.stringify(recordsBig)+';\n'
+       + 'window.EMBEDDED_SPECIAL='+JSON.stringify(recordsSpecial)+';\n';
+}
+function downloadDataJs(){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([makeDataJs()],{type:'text/javascript'}));
+  a.download='data.js'; a.click();
+}
 $('embed').onclick=()=>{
-  if(!records.length) return;
-  const js='window.EMBEDDED_RECORDS = '+JSON.stringify(records)+';\n';
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
-  a.download='data.js'; a.click();
-  alert('สร้าง data.js แล้ว ('+records.length.toLocaleString()+' รายชื่อ)\n\nนำไฟล์ data.js ไปวางไว้โฟลเดอร์เดียวกับระบบ:\nD:\\GI RUN\\HTML\\\n\nจากนั้นเปิดระบบใหม่ ข้อมูลจะถูกฝังเข้าระบบอัตโนมัติ ไม่ต้องอัปโหลดอีก');
+  if(recordsBig.length===0 && recordsSpecial.length===0) return;
+  downloadDataJs();
+  alert('สร้าง data.js แล้ว\nถัง 100: '+recordsBig.length.toLocaleString()+' / ถัง 15: '+recordsSpecial.length.toLocaleString()+' รายชื่อ\n\nวาง data.js ไว้โฟลเดอร์เดียวกับระบบ → เปิดใหม่ข้อมูลโหลดเองทั้ง 2 ถัง');
 };
-
-/* ---------- data.js แบบชื่ออย่างเดียว (ปลอดภัยสำหรับขึ้นเว็บสาธารณะ) ---------- */
 $('embedWeb').onclick=()=>{
-  if(!records.length) return;
-  // ข้อมูลชุดนี้เป็น ชื่อ/นามสกุล/BIB (ไม่มีเบอร์โทร-อีเมล) จึงปลอดภัยขึ้นเว็บได้
-  const js='window.EMBEDDED_RECORDS='+JSON.stringify(records)+';\n';
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([js],{type:'text/javascript'}));
-  a.download='data.js'; a.click();
-  alert('สร้าง data.js แล้ว '+records.length.toLocaleString()+' รายชื่อ (ชื่อ/นามสกุล/BIB)\n\nนำไปอัปขึ้น GitHub แทน data.js เดิม');
+  if(recordsBig.length===0 && recordsSpecial.length===0) return;
+  downloadDataJs();
+  alert('สร้าง data.js แล้ว (ถัง 100: '+recordsBig.length.toLocaleString()+' / ถัง 15: '+recordsSpecial.length.toLocaleString()+')\n\nนำไปอัปขึ้น GitHub แทน data.js เดิม');
 };
 
 /* ---------- ตัวแปลง Lottie → .js ---------- */
@@ -621,16 +688,14 @@ load();
 // ถ้ามี config.js ตั้ง LOG_URL ไว้ และยังไม่ได้กรอกเอง → ใช้ค่าจาก config
 if(!$('logUrl').value && window.LOG_URL) $('logUrl').value=window.LOG_URL;
 loadLog(); renderLog();
-// ถ้ายังไม่มีข้อมูลที่จำไว้ แต่มีข้อมูลฝัง (data.js) ให้โหลดเข้าระบบเลย
-if(records.length===0 && Array.isArray(window.EMBEDDED_RECORDS) && window.EMBEDDED_RECORDS.length){
-  records = window.EMBEDDED_RECORDS.slice();
-}
+// โหลดข้อมูลฝัง (data.js) เข้าแต่ละถัง ถ้ายังไม่มีข้อมูลที่จำไว้
+if(recordsBig.length===0 && Array.isArray(window.EMBEDDED_BIG)) recordsBig=window.EMBEDDED_BIG.slice();
+if(recordsSpecial.length===0 && Array.isArray(window.EMBEDDED_SPECIAL)) recordsSpecial=window.EMBEDDED_SPECIAL.slice();
+// รองรับ data.js แบบเก่า (ถังเดียว) → ใส่เข้าถัง 100
+if(recordsBig.length===0 && Array.isArray(window.EMBEDDED_RECORDS)) recordsBig=window.EMBEDDED_RECORDS.slice();
 rebuildPool(); renderAll(); updateStats();
-// เปิดมาที่หน้าจอสุ่มเลยถ้ามีข้อมูลแล้ว (ไม่มีข้อมูล → ไปหน้าหลังบ้านให้อัปโหลดก่อน)
-if(records.length>0){
-  $('admin').classList.add('hidden');
-  $('show').classList.remove('hidden');
-}
+// เลือกหน้าจอตาม URL: ลงท้าย #backend = หลังบ้าน, ปกติ = หน้าจอสุ่ม
+applyRoute();
 </script>
 </body>
 </html>
