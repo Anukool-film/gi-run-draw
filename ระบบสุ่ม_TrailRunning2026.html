@@ -34,6 +34,8 @@
   h1{font-size:28px;font-weight:800;background:linear-gradient(90deg,var(--pink),#fff,var(--orange));
      -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.25}
   .sub{color:#f0dbef;margin-top:6px;font-size:14px}
+  .pretitle{font-size:17px;font-weight:800;letter-spacing:4px;margin-bottom:2px;
+    background:linear-gradient(90deg,var(--pink),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase}
   .sub-main{font-size:22px;font-weight:800;color:#fff;margin-top:10px;letter-spacing:.3px;
     text-shadow:0 2px 14px rgba(0,0,0,.55)}
   @media(max-width:600px){.sub-main{font-size:18px}}
@@ -173,6 +175,7 @@
 </div>
 <div class="wrap">
   <header>
+    <div class="pretitle">amazing THAILAND</div>
     <h1>🏃 GI Tour &amp; Trail Running 2026</h1>
     <div class="sub sub-main">ระบบสุ่มรายชื่อผู้โชคดี จากกิจกรรม Virtual Run</div>
   </header>
@@ -181,39 +184,20 @@
   <div class="card" id="admin">
     <h2>🗂️ หลังบ้าน — อัปโหลดรายชื่อผู้เข้าร่วม</h2>
 
-    <div class="bucketgrid">
-      <!-- ถัง 100 -->
-      <div class="colpick" style="display:block">
-        <div class="ttl">🏆 ถัง 100 — รายชื่อรางวัลใหญ่</div>
-        <div class="row" style="margin-bottom:8px">
-          <span class="filebtn"><button class="btn-soft">📁 อัปโหลดไฟล์</button><input type="file" id="fileBig" accept=".xlsx,.xls,.csv"></span>
-          <button class="btn-ghost" id="clearBig">ล้าง</button>
-        </div>
-        <div id="colpickBig" style="display:none">
-          <div class="chk"><input type="checkbox" id="hasHeaderBig" checked> แถวแรกเป็นหัวตาราง</div>
-          <label>คอลัมน์ชื่อ</label><select id="colNameBig"></select>
-          <label>คอลัมน์นามสกุล</label><select id="colPhoneBig"><option value="-1">— ไม่ใช้ —</option></select>
-          <label>คอลัมน์ BIB</label><select id="colEmailBig"><option value="-1">— ไม่ใช้ —</option></select>
-          <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCountBig"></div>
-        </div>
-        <div class="count-big" style="margin-top:10px"><span class="lbl">👥 ถัง 100</span><b id="totalBigCount">0</b><span class="unit">คน</span></div>
+    <div class="colpick" style="display:block">
+      <div class="ttl">📋 รายชื่อผู้เข้าร่วม (ใช้สุ่มทั้ง 2 รางวัล — กันได้ซ้ำ)</div>
+      <div class="row" style="margin-bottom:8px">
+        <span class="filebtn"><button class="btn-soft">📁 อัปโหลด Excel / CSV</button><input type="file" id="fileBig" accept=".xlsx,.xls,.csv"></span>
+        <button class="btn-ghost" id="clearBig">ล้างข้อมูล</button>
       </div>
-      <!-- ถัง 15 -->
-      <div class="colpick" style="display:block">
-        <div class="ttl">⭐ ถัง 15 — รายชื่อรางวัลพิเศษ</div>
-        <div class="row" style="margin-bottom:8px">
-          <span class="filebtn"><button class="btn-soft">📁 อัปโหลดไฟล์</button><input type="file" id="fileSp" accept=".xlsx,.xls,.csv"></span>
-          <button class="btn-ghost" id="clearSp">ล้าง</button>
-        </div>
-        <div id="colpickSp" style="display:none">
-          <div class="chk"><input type="checkbox" id="hasHeaderSp" checked> แถวแรกเป็นหัวตาราง</div>
-          <label>คอลัมน์ชื่อ</label><select id="colNameSp"></select>
-          <label>คอลัมน์นามสกุล</label><select id="colPhoneSp"><option value="-1">— ไม่ใช้ —</option></select>
-          <label>คอลัมน์ BIB</label><select id="colEmailSp"><option value="-1">— ไม่ใช้ —</option></select>
-          <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCountSp"></div>
-        </div>
-        <div class="count-big" style="margin-top:10px"><span class="lbl">👥 ถัง 15</span><b id="totalSpCount">0</b><span class="unit">คน</span></div>
+      <div id="colpickBig" style="display:none">
+        <div class="chk"><input type="checkbox" id="hasHeaderBig" checked> แถวแรกเป็นหัวตาราง</div>
+        <label>คอลัมน์ชื่อ</label><select id="colNameBig"></select>
+        <label>คอลัมน์นามสกุล</label><select id="colPhoneBig"><option value="-1">— ไม่ใช้ —</option></select>
+        <label>คอลัมน์ BIB</label><select id="colEmailBig"><option value="-1">— ไม่ใช้ —</option></select>
+        <div style="font-size:12px;color:var(--muted);margin-top:8px" id="colCountBig"></div>
       </div>
+      <div class="count-big" style="margin-top:10px"><span class="lbl">👥 ผู้เข้าร่วมทั้งหมด</span><b id="totalBigCount">0</b><span class="unit">คน</span></div>
     </div>
 
     <div class="fields">
@@ -238,7 +222,7 @@
 
     <div class="note">
       • หน้าจอสุ่ม (frontend) จะโชว์เฉพาะการสุ่มกับผู้โชคดี — ไม่แสดงรายชื่อผู้เข้าร่วมทั้งหมด<br>
-      • <b>2 ถังแยกกัน:</b> ถัง 100 สุ่มจากรายชื่อไฟล์หนึ่ง / ถัง 15 สุ่มจากอีกไฟล์ • กันซ้ำภายในถังเดียวกัน • ข้อมูลถูกจำไว้แม้รีเฟรช<br>
+      • ใช้รายชื่อชุดเดียวสุ่มทั้ง 2 รางวัล • <b>กันได้ซ้ำข้ามรางวัล</b> (ใครได้ GI SET แล้วจะไม่ถูกสุ่มเป็น Voucher อีก) • ข้อมูลถูกจำไว้แม้รีเฟรช<br>
       • <b>ฝังข้อมูลถาวร:</b> อัปโหลดครั้งเดียว → กดปุ่ม 💾 → นำ <b>data.js</b> วางในโฟลเดอร์เดียวกับระบบ → เปิดครั้งต่อไปข้อมูลโหลดเองอัตโนมัติ ไม่ต้องอัปโหลดอีก
     </div>
 
@@ -264,7 +248,7 @@
     <div class="topbar">
       <div class="row" style="gap:10px">
         <input type="text" id="operator" placeholder="👤 พิมพ์ชื่อผู้กดสุ่มที่นี่">
-        <span class="pill" id="poolPill">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
+        <span class="pill" id="poolPill" style="display:none">👥 ผู้มีสิทธิ์ลุ้น 0 คน</span>
       </div>
       <div class="row">
         <button class="btn-ghost" id="resetAll">รีเซ็ตผลทั้งหมด</button>
@@ -296,7 +280,6 @@
       <div class="results">
         <div>
           <div class="rhead">
-            <span class="t" style="color:#ffcf5a">🏆 รางวัลใหญ่</span>
             <span class="cnt" id="cntBig">0/100</span>
             <span class="exp"><button class="btn-green" id="xlBig" disabled>Excel</button><button class="btn-soft" id="csvBig" disabled>CSV</button></span>
           </div>
@@ -307,7 +290,6 @@
         </div>
         <div>
           <div class="rhead">
-            <span class="t" style="color:#ff6fae">⭐ รางวัลพิเศษ</span>
             <span class="cnt" id="cntSp">0/15</span>
             <span class="exp"><button class="btn-green" id="xlSp" disabled>Excel</button><button class="btn-soft" id="csvSp" disabled>CSV</button></span>
           </div>
@@ -339,7 +321,7 @@ $('modal').addEventListener('click',e=>{ if(e.target===$('modal')) $('modalOk').
 
 /* ---------- persistence ---------- */
 function save(){ try{ localStorage.setItem(LSKEY, JSON.stringify({
-  recordsBig,recordsSpecial,winnersBig,winnersSpecial,
+  recordsBig,winnersBig,winnersSpecial,
   n100:$('n100').value,n15:$('n15').value,dur:$('dur').value,
   logUrl:$('logUrl').value, operator:$('operator').value
 })); }catch(e){} }
@@ -389,8 +371,10 @@ $('logClear').onclick=()=>{
 
 /* ---------- pool / stats ---------- */
 function rebuildPool(){
-  const wB=new Set(winnersBig.map(keyOf)); poolBig=recordsBig.filter(r=>!wB.has(keyOf(r)));
-  const wS=new Set(winnersSpecial.map(keyOf)); poolSpecial=recordsSpecial.filter(r=>!wS.has(keyOf(r)));
+  // ใช้ pool ร่วม + กันได้ซ้ำข้ามรางวัล: ตัดผู้ที่ถูกทั้ง 2 รางวัลออกจากทั้งคู่
+  const won=new Set([...winnersBig,...winnersSpecial].map(keyOf));
+  poolBig=recordsBig.filter(r=>!won.has(keyOf(r)));
+  poolSpecial=recordsSpecial.filter(r=>!won.has(keyOf(r)));
   updateStats();
 }
 function getN(id,def){ const v=parseInt($(id).value,10); return (!v||v<1)?def:v; }
@@ -401,7 +385,7 @@ function updateStats(){
   $('lblBig').textContent='จำนวน '+n100+' รางวัล'; $('lblSp').textContent='จำนวน '+n15+' รางวัล';
   $('cntBig').textContent=winnersBig.length+'/'+n100;
   $('cntSp').textContent=winnersSpecial.length+'/'+n15;
-  $('poolPill').textContent='👥 ผู้มีสิทธิ์ลุ้นรวม '+(poolBig.length+poolSpecial.length).toLocaleString()+' คน';
+  $('poolPill').textContent='👥 ผู้มีสิทธิ์ลุ้น '+poolBig.length.toLocaleString()+' คน';
   $('xlBig').disabled=$('csvBig').disabled=winnersBig.length===0;
   $('xlSp').disabled=$('csvSp').disabled=winnersSpecial.length===0;
   const has=recordsBig.length>0||recordsSpecial.length>0;
@@ -442,7 +426,8 @@ function applyColumns(bk){
   const hasH=$(bk.hdrId).checked, nc=+$(bk.nameId).value, pc=+$(bk.phoneId).value, ec=+$(bk.emailId).value;
   const data=rows.slice(hasH?1:0), get=(r,c)=>(c>=0&&r[c]!=null)?String(r[c]).trim():'';
   const recs=data.map(r=>({name:get(r,nc),phone:get(r,pc),email:get(r,ec)})).filter(r=>r.name||r.phone||r.email);
-  if(bk.isBig){ recordsBig=recs; winnersBig=[]; } else { recordsSpecial=recs; winnersSpecial=[]; }
+  // ใช้ไฟล์เดียวสุ่มทั้ง 2 รางวัล → ใส่ทั้งคู่ + เริ่มผลใหม่
+  recordsBig=recs; recordsSpecial=recs; winnersBig=[]; winnersSpecial=[];
   $(bk.cntId).textContent='✓ พบ '+recs.length.toLocaleString()+' รายชื่อ';
   rebuildPool(); save();
 }
@@ -461,9 +446,8 @@ function wireBucket(bk){
   $(bk.hdrId).onchange=()=>setupColumns(bk);
   $(bk.nameId).onchange=$(bk.phoneId).onchange=$(bk.emailId).onchange=()=>applyColumns(bk);
 }
-wireBucket(BUCKETS.big); wireBucket(BUCKETS.sp);
-$('clearBig').onclick=()=>{ BUCKETS.big.rows=[]; recordsBig=[]; winnersBig=[]; $('colpickBig').style.display='none'; $('colCountBig').textContent=''; rebuildPool(); renderAll(); save(); };
-$('clearSp').onclick =()=>{ BUCKETS.sp.rows=[];  recordsSpecial=[]; winnersSpecial=[]; $('colpickSp').style.display='none'; $('colCountSp').textContent=''; rebuildPool(); renderAll(); save(); };
+wireBucket(BUCKETS.big);
+$('clearBig').onclick=()=>{ BUCKETS.big.rows=[]; recordsBig=[]; recordsSpecial=[]; winnersBig=[]; winnersSpecial=[]; $('colpickBig').style.display='none'; $('colCountBig').textContent=''; rebuildPool(); renderAll(); save(); };
 $('n100').oninput=$('n15').oninput=()=>{updateStats();save();};
 $('logUrl').oninput=save;
 $('operator').oninput=()=>{ if($('operator').value.trim()) $('operator').classList.remove('need'); save(); };
@@ -630,8 +614,7 @@ function loop(){ctx.clearRect(0,0,cv.width,cv.height);
 
 /* ---------- ฝังข้อมูลถาวร ---------- */
 function makeDataJs(){
-  return 'window.EMBEDDED_BIG='+JSON.stringify(recordsBig)+';\n'
-       + 'window.EMBEDDED_SPECIAL='+JSON.stringify(recordsSpecial)+';\n';
+  return 'window.EMBEDDED_RECORDS='+JSON.stringify(recordsBig)+';\n'; // ชุดเดียว ใช้ทั้ง 2 รางวัล
 }
 function downloadDataJs(){
   const a=document.createElement('a');
@@ -639,14 +622,14 @@ function downloadDataJs(){
   a.download='data.js'; a.click();
 }
 $('embed').onclick=()=>{
-  if(recordsBig.length===0 && recordsSpecial.length===0) return;
+  if(recordsBig.length===0) return;
   downloadDataJs();
-  alert('สร้าง data.js แล้ว\nถัง 100: '+recordsBig.length.toLocaleString()+' / ถัง 15: '+recordsSpecial.length.toLocaleString()+' รายชื่อ\n\nวาง data.js ไว้โฟลเดอร์เดียวกับระบบ → เปิดใหม่ข้อมูลโหลดเองทั้ง 2 ถัง');
+  alert('สร้าง data.js แล้ว ('+recordsBig.length.toLocaleString()+' รายชื่อ)\n\nวาง data.js ไว้โฟลเดอร์เดียวกับระบบ → เปิดใหม่ข้อมูลโหลดเองอัตโนมัติ');
 };
 $('embedWeb').onclick=()=>{
-  if(recordsBig.length===0 && recordsSpecial.length===0) return;
+  if(recordsBig.length===0) return;
   downloadDataJs();
-  alert('สร้าง data.js แล้ว (ถัง 100: '+recordsBig.length.toLocaleString()+' / ถัง 15: '+recordsSpecial.length.toLocaleString()+')\n\nนำไปอัปขึ้น GitHub แทน data.js เดิม');
+  alert('สร้าง data.js แล้ว ('+recordsBig.length.toLocaleString()+' รายชื่อ)\n\nนำไปอัปขึ้น GitHub แทน data.js เดิม');
 };
 
 /* ---------- ตัวแปลง Lottie → .js ---------- */
@@ -687,11 +670,11 @@ load();
 // ถ้ามี config.js ตั้ง LOG_URL ไว้ และยังไม่ได้กรอกเอง → ใช้ค่าจาก config
 if(!$('logUrl').value && window.LOG_URL) $('logUrl').value=window.LOG_URL;
 loadLog(); renderLog();
-// โหลดข้อมูลฝัง (data.js) เข้าแต่ละถัง ถ้ายังไม่มีข้อมูลที่จำไว้
-if(recordsBig.length===0 && Array.isArray(window.EMBEDDED_BIG)) recordsBig=window.EMBEDDED_BIG.slice();
-if(recordsSpecial.length===0 && Array.isArray(window.EMBEDDED_SPECIAL)) recordsSpecial=window.EMBEDDED_SPECIAL.slice();
-// รองรับ data.js แบบเก่า (ถังเดียว) → ใส่เข้าถัง 100
+// โหลดข้อมูลฝัง (data.js) ถ้ายังไม่มีข้อมูลที่จำไว้
 if(recordsBig.length===0 && Array.isArray(window.EMBEDDED_RECORDS)) recordsBig=window.EMBEDDED_RECORDS.slice();
+if(recordsBig.length===0 && Array.isArray(window.EMBEDDED_BIG)) recordsBig=window.EMBEDDED_BIG.slice();
+// ใช้ชุดเดียวสุ่มทั้ง 2 รางวัล → mirror
+recordsSpecial=recordsBig;
 rebuildPool(); renderAll(); updateStats();
 // เลือกหน้าจอตาม URL: ลงท้าย #backend = หลังบ้าน, ปกติ = หน้าจอสุ่ม
 applyRoute();
